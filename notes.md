@@ -1,1 +1,1 @@
-Hello, this is the start of my chess project
+Hello! This is the start of my chess project
