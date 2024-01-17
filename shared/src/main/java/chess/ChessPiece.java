@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -9,8 +10,12 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
+    private final ChessPiece.PieceType type;
+    private final ChessGame.TeamColor pieceColor;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
+        this.type = type;
+        this.pieceColor = pieceColor;
     }
 
     /**
@@ -29,14 +34,14 @@ public class ChessPiece {
      * @return Which team this chess piece belongs to
      */
     public ChessGame.TeamColor getTeamColor() {
-        throw new RuntimeException("Not implemented");
+        return pieceColor;
     }
 
     /**
      * @return which type of chess piece this piece is
      */
     public PieceType getPieceType() {
-        throw new RuntimeException("Not implemented");
+        return type;
     }
 
     /**
@@ -47,6 +52,26 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        ArrayList<int[]> movesList = new ArrayList<int[]>();
+        if(this.getPieceType() == PieceType.KING){
+            int[] directions = {-1, 0, 1};
+            for(int r : directions){
+                for(int c : directions) {
+                    if(r == 0 & c == 0){ // Same as starting position
+                        continue;
+                    }
+                    else{
+                    int newRow = row + r;
+                    int newCol = col + c;
+                    int[] move = {newRow, newCol};
+                    // TODO Add in case to check if own team's piece is there
+                    movesList.add(move);
+                }
+            }
+        }
     }
-}
+        return null; //TODO must return collection of ChessMove object
+    }
