@@ -229,13 +229,100 @@ public class ChessPiece {
                 if(this.pieceColor == ChessGame.TeamColor.WHITE){
                     direction = 1;
                 }
-                else{
+                else {
                     direction = -1;
                 }
+                int newRow = row + direction;
+                var newPosition = new ChessPosition(newRow, col);
+                var attackPosition1 = new ChessPosition(newRow, col+1);
+                var attackPosition2 = new ChessPosition(newRow, col-1);
+                if(newRow >= 1 & newRow <= 8){
+                    //in bounds
+                    if (board.getPiece(newPosition) == null) {
+                        //space is in bounds and not occupied, is added after checking for promotion
+                        if(canPromote(newPosition, pieceColor)){
+                            promotePawn(myPosition, newPosition, movesList);
+                        }
+                        else {
+                            var newMove = new ChessMove(myPosition, newPosition, null);
+                            movesList.add(newMove);
+                        }
+                    }
+                }
+                //Check for and add initial movement
+                if(this.pieceColor == ChessGame.TeamColor.WHITE){   //White
+                    if(row == 2){
+                        var initialMovePosition = new ChessPosition(newRow + direction, col);
+                        if(board.getPiece(initialMovePosition) == null & board.getPiece(newPosition) == null){
+                            var newMove = new ChessMove(myPosition, initialMovePosition, null);
+                            movesList.add(newMove);
+                        }
+                    }
+                }
+                else{   //Black
+                    if(row == 7){
+                        var initialMovePosition = new ChessPosition(newRow + direction, col);
+                        if(board.getPiece(initialMovePosition) == null & board.getPiece(newPosition) == null){
+                            var newMove = new ChessMove(myPosition, initialMovePosition, null);
+                            movesList.add(newMove);
+                        }
+                    }
+                }
 
+                //Check two diagonal attack positions
+                if(newRow >= 1 & newRow <= 8 & col+1 >= 1 & col+1 <= 8) {
+                    //in bounds
+                    if(board.getPiece(attackPosition1) != null){
+                        //space is occupied
+                        if(board.getPiece(attackPosition1).pieceColor != this.pieceColor){
+                            //occupied by enemy, space is in bounds and added
+                            if(canPromote(attackPosition1, pieceColor)){
+                                promotePawn(myPosition, attackPosition1, movesList);
+                            }
+                            else {
+                                var newMove = new ChessMove(myPosition, attackPosition1, null);
+                                movesList.add(newMove);
+                            }
+                        }
+                    }
+                }
+                if(newRow >= 1 & newRow <= 8 & col-1 >= 1 & col-1 <= 8) {
+                    //in bounds
+                    if(board.getPiece(attackPosition2) != null){
+                        //space is occupied
+                        if(board.getPiece(attackPosition2).pieceColor != this.pieceColor){
+                            //occupied by enemy, space is in bounds and added
+                            if(canPromote(attackPosition2, pieceColor)){
+                                promotePawn(myPosition, attackPosition2, movesList);
+                            }
+                            else {
+                                var newMove = new ChessMove(myPosition, attackPosition2, null);
+                                movesList.add(newMove);
+                            }
+                        }
+                    }
+                }
             }
         }
         return movesList;
+    }
+
+    private boolean canPromote(ChessPosition newPosition, ChessGame.TeamColor myColor){
+        if(myColor == ChessGame.TeamColor.WHITE){
+            return newPosition.getRow() == 8;
+        }
+        else{
+            return newPosition.getRow() == 1;
+        }
+    }
+
+    private void promotePawn(ChessPosition startPosition, ChessPosition currentPosition, Collection<ChessMove> movesList){
+        for (PieceType piece : PieceType.values()) {
+            if (piece != PieceType.KING && piece != this.type) {
+                var move = new ChessMove(startPosition, currentPosition, piece);
+                movesList.add(move);
+            }
+        }
     }
 
     private void searchSpace(ChessPosition startPosition, ChessPosition currentPosition, ChessBoard board, Collection<ChessMove> movesList,
