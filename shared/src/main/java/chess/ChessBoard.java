@@ -1,6 +1,7 @@
 package chess;
 
 import java.util.Arrays;
+import java.util.Map;
 
 /**
  * A chessboard that can hold and rearrange chess pieces.
@@ -10,6 +11,13 @@ import java.util.Arrays;
  */
 public class ChessBoard {
     private final ChessPiece[][] board = new ChessPiece[8][8];
+    final static Map<Character, ChessPiece.PieceType> charToTypeMap = Map.of(
+            'p', ChessPiece.PieceType.PAWN,
+            'n', ChessPiece.PieceType.KNIGHT,
+            'r', ChessPiece.PieceType.ROOK,
+            'q', ChessPiece.PieceType.QUEEN,
+            'k', ChessPiece.PieceType.KING,
+            'b', ChessPiece.PieceType.BISHOP);
 
     public ChessBoard() {
         
@@ -63,6 +71,37 @@ public class ChessBoard {
      * (How the game of chess normally starts)
      */
     public void resetBoard() {
-        throw new RuntimeException("Not implemented");
+        var boardText ="""
+                |r|n|b|q|k|b|n|r|
+                |p|p|p|p|p|p|p|p|
+                | | | | | | | | |
+                | | | | | | | | |
+                | | | | | | | | |
+                | | | | | | | | |
+                |P|P|P|P|P|P|P|P|
+                |R|N|B|Q|K|B|N|R|
+                """;
+        int row = 8;
+        int column = 1;
+        for (var c : boardText.toCharArray()) {
+            switch (c) {
+                case '\n' -> {
+                    column = 1;
+                    row--;
+                }
+                case ' ' -> column++;
+                case '|' -> {
+                }
+                default -> {
+                    ChessGame.TeamColor color = Character.isLowerCase(c) ? ChessGame.TeamColor.BLACK
+                            : ChessGame.TeamColor.WHITE;
+                    var type = charToTypeMap.get(Character.toLowerCase(c));
+                    var position = new ChessPosition(row, column);
+                    var piece = new ChessPiece(color, type);
+                    this.addPiece(position, piece);
+                    column++;
+                }
+            }
+        }
     }
 }

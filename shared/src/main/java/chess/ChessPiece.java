@@ -109,6 +109,21 @@ public class ChessPiece {
                         movesList.add(move);
                         }}}}}
             case QUEEN -> {
+                int[][] directions = {
+                        {1, 0}, //up
+                        {0, 1}, //right
+                        {-1, 0}, //down
+                        {0, -1}, //left
+                        {1, 1}, //up/right
+                        {1, -1}, //up/left
+                        {-1, 1}, //down/right
+                        {-1, -1} //down/left
+                };
+                for(int[] direction : directions){
+                    int r = direction[0];
+                    int c = direction[1];
+                    searchSpace(myPosition, myPosition, board, movesList, r, c, this.pieceColor);
+                }
             }
             case BISHOP -> {
                 boolean addMove = false;
@@ -164,12 +179,94 @@ public class ChessPiece {
                 }
             }
             case KNIGHT -> {
+                int[][] directions = {
+                        {2, 1}, //up and right
+                        {2, -1}, //up and left
+                        {1, 2}, //right and up
+                        {-1, 2}, //right and down
+                        {-2, 1}, //down and right
+                        {-2, -1}, //down and left
+                        {-1, -2}, //left and down
+                        {1, -2}, //left and up
+                };
+
+                for(int[] direction : directions){
+                    int newRow = row + direction[0];
+                    int newCol = col + direction[1];
+                    var newPosition = new ChessPosition(newRow, newCol);
+
+                    //Check for out of bounds
+                    if(newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8){
+                        continue;
+                    }
+                    //New position is in bounds, check to see if occupied
+
+                    if(board.getPiece(newPosition) != null){
+                        //position is occupied, check if is occupied by enemy team
+                        if(board.getPiece(newPosition).getTeamColor() != this.pieceColor){
+                            //occupied by enemy, spot it taken and added to list
+                            var newMove = new ChessMove(myPosition, newPosition, null);
+                            movesList.add(newMove);
+                        }
+                    }
+                    else{
+                        //spot is not occupied, it is added to list
+                        var newMove = new ChessMove(myPosition, newPosition, null);
+                        movesList.add(newMove);
+                    }
+                }
             }
             case ROOK -> {
+                    //Defines directions going in the x or y direction
+                    int[][] directions = {{1, 0}, {-1, 0}, {0, -1},{0, 1}};
+                    for (int[] direction : directions) {
+                        int r = direction[0]; int c = direction[1];
+                        searchSpace(myPosition, myPosition, board, movesList, r, c, this.pieceColor);
+                    }
             }
             case PAWN -> {
+                int direction;
+                if(this.pieceColor == ChessGame.TeamColor.WHITE){
+                    direction = 1;
+                }
+                else{
+                    direction = -1;
+                }
+
             }
         }
         return movesList;
-    }}
+    }
+
+    private void searchSpace(ChessPosition startPosition, ChessPosition currentPosition, ChessBoard board, Collection<ChessMove> movesList,
+                             int r, int c, ChessGame.TeamColor myColor) {
+
+        int row = currentPosition.getRow(); int col = currentPosition.getColumn();
+        int new_row = row + r; int new_col = col + c;
+        //New position variable is assigned with new row/column values
+        var newPos = new ChessPosition(new_row, new_col);
+
+        // Checks to see if new position value is within bounds
+        if (new_row < 1 || new_row > 8 || new_col < 1 || new_col > 8) {
+            return;
+        }
+        // Checks for other pieces in new spot
+        if (board.getPiece(newPos) != null) {
+            //board is occupied, If occupied by enemy they are captured
+            var piece = board.getPiece(newPos);
+            if (piece.pieceColor != myColor) {
+                //Move is added if piece is of the opposite team
+                var newMove = new ChessMove(startPosition, newPos, null);
+                movesList.add(newMove);
+            }
+            //Recursion stops and the algorithm doesn't repeat
+            return;
+        }
+        // Updates variables and move is added to list
+        var newMove = new ChessMove(startPosition, newPos, null);
+        movesList.add(newMove);
+        // Repeats recursion
+        searchSpace(startPosition, newPos, board, movesList, r, c, myColor);
+    }
+}
 
