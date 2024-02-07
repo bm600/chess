@@ -60,6 +60,11 @@ public class ChessGame {
         }
     }
 
+    private void changeTurn(){
+        if(this.turn == TeamColor.WHITE) turn = TeamColor.BLACK;
+        else if (this.turn == TeamColor.BLACK) turn = TeamColor.WHITE;
+    }
+
     /**
      * Makes a move in a chess game
      *
@@ -92,6 +97,7 @@ public class ChessGame {
         this.board.addPiece(end, piece);
 
         //TODO May need to check for Pawn Promotion
+        changeTurn();
     }
 
     /**
@@ -102,11 +108,13 @@ public class ChessGame {
      */
 
     private ChessPosition findKing(TeamColor teamColor){
-        for(int r = 0; r < 8; r++){
-            for(int c = 0; c < 8; c++){
+        for(int r =1; r <= 8; r++){
+            for(int c = 1; c <= 8; c++){
                 var currPosition = new ChessPosition(r, c);
-                if(board.getPiece(currPosition).getTeamColor() == teamColor & board.getPiece(currPosition).getPieceType() == ChessPiece.PieceType.KING){
-                    return currPosition;
+                if(board.getPiece(currPosition) != null) {
+                    if (board.getPiece(currPosition).getTeamColor() == teamColor & board.getPiece(currPosition).getPieceType() == ChessPiece.PieceType.KING) {
+                        return currPosition;
+                    }
                 }
             }
         }
@@ -116,16 +124,18 @@ public class ChessGame {
     public boolean isInCheck(TeamColor teamColor) {
         ChessPosition king = findKing(teamColor);
 
-        for(int r = 0; r < 8; r++){
-            for(int c = 0; c < 8; c++){
+        for(int r = 1; r <= 8; r++){
+            for(int c = 1; c <= 8; c++){
                 var currPosition = new ChessPosition(r, c);
-                if(board.getPiece(currPosition).getTeamColor() != teamColor){
+                if(board.getPiece(currPosition) != null){
+                if(board.getPiece(currPosition).getTeamColor() != teamColor) {
                     Collection<ChessMove> movesList = validMoves(currPosition);
-                    for(ChessMove move : movesList){
-                        if(move.getEndPosition() == king){
+                    for (ChessMove move : movesList) {
+                        if (move.getEndPosition().equals(king)) {
                             return true;
                         }
                     }
+                }
                 }
             }
         }
