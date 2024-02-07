@@ -9,7 +9,20 @@ import java.util.Map;
  * Note: You can add to this class, but you may not alter
  * signature of the existing methods.
  */
-public class ChessBoard {
+public class ChessBoard{
+    public ChessBoard(ChessBoard other) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPiece originalPiece = other.board[i][j];
+                if (originalPiece != null) {
+                    this.board[i][j] = new ChessPiece(originalPiece.getTeamColor(), originalPiece.getPieceType());
+                } else {
+                    this.board[i][j] = null;
+                }
+            }
+        }
+    }
+
     private final ChessPiece[][] board = new ChessPiece[8][8];
     final static Map<Character, ChessPiece.PieceType> charToTypeMap = Map.of(
             'p', ChessPiece.PieceType.PAWN,
@@ -57,6 +70,13 @@ public class ChessBoard {
     public void removePiece(ChessPosition position) {
         board[position.getRow() - 1][position.getColumn() - 1] = null;
     }
+
+    public void movePiece(ChessPosition start, ChessPosition end) {
+        ChessPiece piece = getPiece(start);
+        this.removePiece(start);
+        this.addPiece(end, piece);
+    }
+
 
     /**
      * Gets a chess piece on the chessboard
@@ -108,4 +128,6 @@ public class ChessBoard {
             }
         }
     }
+
+
 }

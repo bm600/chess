@@ -55,14 +55,54 @@ public class ChessGame {
         if(currPiece == null){
             return null;
         }
+        //TODO make it so moving into check doesn't add to valid moves
         else {
             return currPiece.pieceMoves(board, startPosition);
         }
     }
 
+
+    private Collection<ChessMove> testMovesList(Collection<ChessMove> movesList){
+        HashSet<ChessMove> newMovesList = new HashSet<>();
+        for(ChessMove move : movesList){
+            ChessPosition start = move.getStartPosition();
+            ChessPosition end = move.getEndPosition();
+            ChessPiece piece = board.getPiece(start);
+            var clone = new ChessBoard(board);
+
+            clone.removePiece(end);
+            clone.removePiece(start);
+            clone.addPiece(end, piece);
+            if(!isOtherBoardInCheck(turn, clone)){
+                newMovesList.add(move);
+            }
+        }
+        return newMovesList;
+    }
+
     private void changeTurn(){
         if(this.turn == TeamColor.WHITE) turn = TeamColor.BLACK;
         else if (this.turn == TeamColor.BLACK) turn = TeamColor.WHITE;
+    }
+    public boolean isOtherBoardInCheck(TeamColor teamColor, ChessBoard otherBoard) {
+        ChessPosition king = findKing(teamColor);
+
+        for(int r = 1; r <= 8; r++){
+            for(int c = 1; c <= 8; c++){
+                var currPosition = new ChessPosition(r, c);
+                if(otherBoard.getPiece(currPosition) != null){
+                    if(otherBoard.getPiece(currPosition).getTeamColor() != teamColor) {
+                        Collection<ChessMove> movesList = validMoves(currPosition);
+                        for (ChessMove move : movesList) {
+                            if (move.getEndPosition().equals(king)) {
+                                    return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -72,9 +112,11 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+
         ChessPosition start = move.getStartPosition();
         ChessPosition end = move.getEndPosition();
         ChessPiece piece = board.getPiece(start);
+
 
         if(piece == null){
             throw new InvalidMoveException("Invalid move");
@@ -82,19 +124,38 @@ public class ChessGame {
 
         Collection<ChessMove> movesList = validMoves(start);
 
-        TeamColor currTurn = board.getPiece(start).getTeamColor();
+        TeamColor currTurn = piece.getTeamColor();
         if(this.turn != currTurn){
             throw new InvalidMoveException("Invalid move");
         } else if (!movesList.contains(move)) {
             throw new InvalidMoveException("Invalid move");
+        } else if(isInCheck(turn)){
+            var clone1 = new ChessBoard(board);
+            clone1.removePiece(end);
+            clone1.removePiece(start);
+            clone1.addPiece(end, piece);
+            if(isOtherBoardInCheck(turn, clone1)){
+                throw new InvalidMoveException("Invalid move");
+            }
         }
-        else if(isInCheck(turn)){
+
+
+        ChessBoard clone = new ChessBoard(board);
+        ChessPiece piece2 = board.getPiece(start);
+        clone.removePiece(end);
+        clone.removePiece(start);
+        clone.addPiece(end, piece2);
+
+        if(isOtherBoardInCheck(turn, clone)){
             throw new InvalidMoveException("Invalid move");
             //TODO finish checking the CHECK
         }
 
+        var removedPiece = board.getPiece(end);
+        this.board.removePiece(end);
         this.board.removePiece(start);
         this.board.addPiece(end, piece);
+
 
         //TODO May need to check for Pawn Promotion
         changeTurn();
