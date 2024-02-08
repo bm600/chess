@@ -61,11 +61,10 @@ public class ChessGame {
             this.turn = currPiece.getTeamColor();
             Collection<ChessMove> movesList = currPiece.pieceMoves(board, startPosition);
             HashSet<ChessMove> finalMoves = new HashSet<>();
-            ChessBoard clonedBoard = new ChessBoard(board);
             ChessPiece myPiece = board.getPiece(startPosition);
 
             for (ChessMove move : movesList) {
-                ChessPiece capturedPiece = clonedBoard.getPiece(move.endPosition); // Save the captured piece
+                ChessBoard clonedBoard = new ChessBoard(board);
                 clonedBoard.removePiece(move.endPosition);
                 clonedBoard.removePiece(move.startPosition);
                 clonedBoard.addPiece(move.endPosition, myPiece);
@@ -73,9 +72,6 @@ public class ChessGame {
                 if (!isOtherBoardInCheck(myPiece.getTeamColor(), clonedBoard)) {
                     finalMoves.add(move);
                 }
-
-                clonedBoard.movePiece(move.endPosition, move.startPosition);
-                clonedBoard.addPiece(move.endPosition, capturedPiece); // Restore the captured piece, if any
             }
             this.turn = oldColor;
             return finalMoves;
