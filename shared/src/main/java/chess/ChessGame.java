@@ -127,6 +127,22 @@ public class ChessGame {
         return allMoves;
     }
 
+    public Collection<ChessMove> allValidMoves(TeamColor teamColor, ChessBoard otherBoard) {
+        Collection<ChessMove> allMoves = new HashSet<>();
+        for (int i = 1; i <= 8; i++) {
+            for (int j = 1; j <= 8; j++) {
+                ChessPosition myPos = new ChessPosition(i, j);
+                ChessPiece myPiece = otherBoard.getPiece(myPos);
+                if (myPiece != null && myPiece.getTeamColor() == teamColor) {
+                    Collection<ChessMove> moves = validMoves(myPos);
+                    allMoves.addAll(moves);
+                }
+            }
+        }
+
+        return allMoves;
+    }
+
     /**
      * Makes a move in a chess game
      *
@@ -173,7 +189,6 @@ public class ChessGame {
             //TODO finish checking the CHECK
         }
 
-        var removedPiece = board.getPiece(end);
         this.board.removePiece(end);
         this.board.removePiece(start);
         this.board.addPiece(end, piece);
@@ -231,7 +246,10 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-        if
+        if(isInCheck(teamColor)){
+            return allValidMoves(teamColor, board).isEmpty();
+        }
+        return false;
     }
 
     /**
@@ -242,14 +260,12 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        if (!isInCheck(teamColor)) {
+        if(!isInCheck(teamColor)) {
+            return allValidMoves(teamColor, board).isEmpty();
+        }
+        else{
             return false;
         }
-
-        ChessPosition kingPosition = findKing(teamColor, board);
-        Collection<ChessMove> validMoves = validMoves(kingPosition);
-
-        return validMoves.isEmpty();
     }
 
     /**
