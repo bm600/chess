@@ -186,7 +186,6 @@ public class ChessGame {
 
         if(isOtherBoardInCheck(turn, clone)){
             throw new InvalidMoveException("Invalid move");
-            //TODO finish checking the CHECK
         }
 
         this.board.removePiece(end);
@@ -194,7 +193,16 @@ public class ChessGame {
         this.board.addPiece(end, piece);
 
 
-        //TODO May need to check for Pawn Promotion
+        if (piece.getPieceType().equals(ChessPiece.PieceType.PAWN)) {
+            if ((piece.getTeamColor() == TeamColor.WHITE && end.getRow() == 8) || (piece.getTeamColor() == TeamColor.BLACK && end.getRow() == 1)) {
+                if (move.getPromotionPiece() == null) {
+                    throw new InvalidMoveException("No promotion piece was specified for Pawn.");
+                }
+                board.removePiece(end);
+                ChessPiece promotion = new ChessPiece(piece.getTeamColor(), move.getPromotionPiece());
+                this.board.addPiece(end, promotion);
+            }
+        }
         changeTurn();
     }
 
