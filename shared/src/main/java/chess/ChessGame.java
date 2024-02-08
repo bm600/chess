@@ -75,18 +75,6 @@ public class ChessGame {
         return finalMoves;
     }
 
-    private Collection<ChessMove> _validMoves(ChessPosition startPosition) {
-        ChessPiece currPiece = board.getPiece(startPosition);
-        if(currPiece == null){
-            return new HashSet<>();
-        }
-        else {
-            return currPiece.pieceMoves(board, startPosition);
-        }
-    }
-
-
-
     private void changeTurn(){
         if(this.turn == TeamColor.WHITE) turn = TeamColor.BLACK;
         else if (this.turn == TeamColor.BLACK) turn = TeamColor.WHITE;
