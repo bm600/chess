@@ -15,6 +15,10 @@ public class Server {
         return Spark.port();
     }
 
+    private void deleteData(Request req, Response res) {
+
+    }
+
     public void stop() {
         Spark.stop();
         Spark.awaitStop();
