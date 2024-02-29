@@ -10,10 +10,14 @@ public class RegistrationService {
     private UserDAO userDAO;
     private AuthDAO authDAO;
 
-    public UserData getUser(String username){
-        return userDAO.getUser(username);
+    public RegistrationService(UserDAO userDAO, AuthDAO authDAO){
+        this.authDAO = authDAO;
+        this.userDAO = userDAO;
     }
 
+    public UserData getUser(String username){
+        return userDAO.getUser(username);
+    }//TODO possibly delete this function from here later
     public UserData createUser(UserData userData){
         if (userData.getPassword() == null || userData.getEmail() == null || userData.getUsername() == null)
             throw new IllegalArgumentException("Invalid user data"); //TODO change exception

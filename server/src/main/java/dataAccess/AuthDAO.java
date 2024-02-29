@@ -19,4 +19,12 @@ public class AuthDAO {
         authList.put(authToken, new_auth);
         return new_auth;
     }
+
+    public AuthData getAuth(String authToken){
+        return authList.get(authToken);
+    }
+
+    public void deleteAuth(String authToken) {
+        authList.remove(authToken);
+    }
 }

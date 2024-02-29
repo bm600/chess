@@ -8,7 +8,13 @@ public class ClearService {
     private UserDAO userDAO;
     private AuthDAO authDAO;
     private GameDAO gameDAO;
-    void clearApplication(){
+
+    public ClearService(UserDAO userDAO, AuthDAO authDAO, GameDAO gameDAO){
+        this.gameDAO = gameDAO;
+        this.authDAO = authDAO;
+        this.userDAO = userDAO;
+    }
+    public void clearAll(){
         deleteAllUsers();
         deleteAllGames();
     }
@@ -19,4 +25,5 @@ public class ClearService {
     public void deleteAllGames(){
         gameDAO.deleteAllGames();
     }
+
 }
