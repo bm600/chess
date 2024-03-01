@@ -15,9 +15,9 @@ public class AuthDAO {
 
     public AuthData createAuth(String username) {
         String authToken = AuthTokenGenerator.makeToken();
-        AuthData new_auth = new AuthData(authToken, username);
-        authList.put(authToken, new_auth);
-        return new_auth;
+        AuthData newAuth = new AuthData(authToken, username);
+        authList.put(authToken, newAuth);
+        return newAuth;
     }
 
     public AuthData getAuth(String authToken){

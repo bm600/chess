@@ -141,13 +141,8 @@ public class ChessPiece {
                         var newPosition = new ChessPosition(newRow, newCol);
                         if(board.getPiece(newPosition) != null) {
                             //Sees if space is occupied by enemy
-                            if (board.getPiece(newPosition).getTeamColor() != this.pieceColor) {
-                                //Piece is taken and move is added to list
-                                addMove = true;
-                            }
-                            else{
-                                addMove = false;
-                            }
+                            //Piece is taken and move is added to list
+                            addMove = board.getPiece(newPosition).getTeamColor() != this.pieceColor;
                         }
                         //New position is not occupied
                         else {
@@ -329,12 +324,12 @@ public class ChessPiece {
                              int r, int c, ChessGame.TeamColor myColor) {
 
         int row = currentPosition.getRow(); int col = currentPosition.getColumn();
-        int new_row = row + r; int new_col = col + c;
+        int newRow = row + r; int newCol = col + c;
         //New position variable is assigned with new row/column values
-        var newPos = new ChessPosition(new_row, new_col);
+        var newPos = new ChessPosition(newRow, newCol);
 
         // Checks to see if new position value is within bounds
-        if (new_row < 1 || new_row > 8 || new_col < 1 || new_col > 8) {
+        if (newRow < 1 || newRow > 8 || newCol < 1 || newCol > 8) {
             return;
         }
         // Checks for other pieces in new spot

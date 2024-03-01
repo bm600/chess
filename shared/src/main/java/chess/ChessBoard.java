@@ -71,12 +71,6 @@ public class ChessBoard{
         board[position.getRow() - 1][position.getColumn() - 1] = null;
     }
 
-    public void movePiece(ChessPosition start, ChessPosition end) {
-        ChessPiece piece = getPiece(start);
-        this.removePiece(start);
-        this.addPiece(end, piece);
-    }
-
 
     /**
      * Gets a chess piece on the chessboard
