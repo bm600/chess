@@ -17,10 +17,10 @@ public class RegistrationService {
 
     public UserData getUser(String username){
         return userDAO.getUser(username);
-    }//TODO possibly delete this function from here later
+    }
     public void createUser(UserData userData){
         if (userData.getPassword() == null || userData.getEmail() == null || userData.getUsername() == null)
-            throw new IllegalArgumentException("Invalid user data"); //TODO change exception
+            throw new IllegalArgumentException("Invalid user data");
         userDAO.createUser(userData);
     }
 

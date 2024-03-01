@@ -11,8 +11,8 @@ public class GameData {
     String gameName;
     ChessGame game;
 
-    public GameData(int ID, String wUsername, String bUsername, String gName, ChessGame game){
-        this.gameID = ID;
+    public GameData(int id, String wUsername, String bUsername, String gName, ChessGame game){
+        this.gameID = id;
         this.whiteUsername = wUsername;
         this.blackUsername = bUsername;
         this.gameName = gName;
