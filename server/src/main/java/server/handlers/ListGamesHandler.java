@@ -17,7 +17,7 @@ public class ListGamesHandler {
         this.gameService = gameService;
     }
 
-    public Object handle(Request req, Response res) {
+    public Object handleListGames(Request req, Response res) {
         try {
             String authToken = req.headers("Authorization");
 

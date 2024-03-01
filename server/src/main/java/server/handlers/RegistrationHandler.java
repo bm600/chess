@@ -1,5 +1,6 @@
 package server.handlers;
 
+import model.AuthData;
 import model.UserData;
 import service.RegistrationService;
 import com.google.gson.Gson;
@@ -17,13 +18,13 @@ public class RegistrationHandler {
     private static record RequestBody(String username, String password, String email) {
     }
 
-    public Object handle(Request req, Response res) {
+    public Object handleRegistration(Request req, Response res) {
         String username;
         String password;
         String email;
 
         try {
-            final var requestBody = new Gson().fromJson(req.body(), RequestBody.class);
+            final RequestBody requestBody = new Gson().fromJson(req.body(), RequestBody.class);
             username = requestBody.username();
             password = requestBody.password();
             email = requestBody.email();
@@ -38,8 +39,8 @@ public class RegistrationHandler {
         }
 
         try {
-            // look up the user to see if they exist already
-            final var existingUser = registrationService.getUser(username);
+            // Look up the user to see if they already exist
+            final UserData existingUser = registrationService.getUser(username);
 
             if (existingUser != null) {
                 res.status(403);
@@ -48,13 +49,13 @@ public class RegistrationHandler {
                 ));
             }
 
-            // if the user does not exist, create them
+            // If the user does not exist, create them
             registrationService.createUser(new UserData(username, password, email));
 
-            // create a new session for the user
-            final var auth = registrationService.createAuth(username);
+            // Create a new session for the user
+            final AuthData auth = registrationService.createAuth(username);
 
-            // respond with the auth token and username
+            // Respond with the auth token and username
             return new Gson().toJson(Map.of(
                     "username", username,
                     "authToken", auth.getAuthToken()

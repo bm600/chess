@@ -5,7 +5,6 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 import chess.ChessGame;
-import model.AuthData;
 import model.GameData;
 import service.GameService;
 import spark.Request;
@@ -20,22 +19,22 @@ public class CreateGameHandler {
         this.gameService = gameService;
     }
 
-    public Object handle(Request req, Response res) {
+    public Object handleCreateGame(Request req, Response res) {
         String gameName;
 
         try {
-            final var requestBody = new Gson().fromJson(req.body(), RequestBody.class);
+            final RequestBody requestBody = new Gson().fromJson(req.body(), RequestBody.class);
             gameName = requestBody.gameName();
             if (gameName == null) {
                 throw new Exception();
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             res.status(400);
             return new Gson().toJson(Map.of("message", "Error: bad request"));
         }
 
         try {
-            final var authToken = req.headers("Authorization");
+            final String authToken = req.headers("Authorization");
             if (authToken == null) {
                 res.status(401);
                 return new Gson().toJson(Map.of("message", "Error: unauthorized"));
@@ -61,7 +60,7 @@ public class CreateGameHandler {
             return new Gson().toJson(Map.of(
                     "gameID", gameId
             ));
-        } catch(Exception e) {
+        } catch (Exception e) {
             res.status(500);
             return "Error: Internal server error";
         }

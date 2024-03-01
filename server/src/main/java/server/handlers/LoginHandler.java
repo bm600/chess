@@ -1,5 +1,7 @@
 package server.handlers;
 
+import model.AuthData;
+import model.UserData;
 import service.LoginService;
 import spark.Request;
 import spark.Response;
@@ -15,12 +17,12 @@ public class LoginHandler {
 
     private static record RequestBody(String username, String password) {
     }
-    public Object handle(Request req, Response res) {
+    public Object handleLogin(Request req, Response res) {
         String username;
         String password;
 
         try {
-            final var requestBody = new Gson().fromJson(req.body(), RequestBody.class);
+            final RequestBody requestBody = new Gson().fromJson(req.body(), RequestBody.class);
             username = requestBody.username();
             password = requestBody.password();
 
@@ -33,14 +35,14 @@ public class LoginHandler {
         }
 
         try {
-            final var user = loginService.getUser(username);
+            final UserData user = loginService.getUser(username);
 
             if (user == null || !user.getPassword().equals(password)) {
                 res.status(401);
                 return new Gson().toJson(Map.of("message", "Error: unauthorized"));
             }
 
-            final var newAuth = loginService.createAuth(username);
+            final AuthData newAuth = loginService.createAuth(username);
 
             res.status(200);
             return new Gson().toJson(Map.of(

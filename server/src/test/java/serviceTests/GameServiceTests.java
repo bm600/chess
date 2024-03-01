@@ -1,8 +1,5 @@
 package serviceTests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -11,6 +8,8 @@ import dataAccess.DataAccessException;
 import dataAccess.*;
 import model.GameData;
 import service.GameService;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameServiceTests {
     private static GameDAO gameDAO;
@@ -21,27 +20,21 @@ public class GameServiceTests {
     private static GameService gameService;
 
     @BeforeEach
-    public void beforeEach() {
-        gameDAO = new GameDAO();
-        authDAO = new AuthDAO();
-        userDAO = new UserDAO();
+    void beforeEach() {
+        GameDAO gameDAO = new GameDAO();
+        AuthDAO authDAO = new AuthDAO();
+        UserDAO userDAO = new UserDAO();
         gameService = new GameService(gameDAO, authDAO, userDAO);
     }
 
     @Test
-    void shouldListGames() {
-        final int gameID = 1;
-        final String gameName = "gameName";
-        final GameData game1 = new GameData(gameID, null, null, gameName, new ChessGame());
-
-        final int gameID2 = 2;
-        final String gameName2 = "gameName2";
-        final GameData game2 = new GameData(gameID2, null, null, gameName2, new ChessGame());
+    void testListGames() {
+        final String username = "username";
+        final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
+        final GameData game2 = new GameData(2, null, null, "gameName2", new ChessGame());
 
         gameService.createGame(game1);
         gameService.createGame(game2);
-
-        final String username = "username";
 
         final var games = gameService.listGames(username);
 
@@ -49,7 +42,7 @@ public class GameServiceTests {
     }
 
     @Test
-    void shouldListEmptyGames() {
+    void testEmptyGames() {
         final String username = "username";
 
         final var games = gameService.listGames(username);
@@ -58,13 +51,10 @@ public class GameServiceTests {
     }
 
     @Test
-    void shouldDeleteAllGames() {
-        final int gameID = 1;
-        final String gameName = "gameName";
-        final GameData game1 = new GameData(gameID, null, null, gameName, new ChessGame());
+    void testDeleteGames() {
+        final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
 
         gameService.createGame(game1);
-
         gameService.deleteAllGames();
 
         final var games = gameService.listGames(null);
@@ -73,7 +63,7 @@ public class GameServiceTests {
     }
 
     @Test
-    void shouldDeleteAllGamesEvenWhenEmpty() {
+    void testDeleteAllGamesAlreadyEmpty() {
         gameService.deleteAllGames();
 
         final var games = gameService.listGames(null);
@@ -82,23 +72,19 @@ public class GameServiceTests {
     }
 
     @Test
-    void shouldCreateGame() {
-        final int gameID = 1;
-        final String gameName = "gameName";
-        final GameData game1 = new GameData(gameID, null, null, gameName, new ChessGame());
+    void testCreateGame() {
+        final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
 
         gameService.createGame(game1);
-        final var gameResult = gameService.getGame(gameID);
+        final var gameResult = gameService.getGame(1);
 
-        assertEquals(gameID, gameResult.getGameID());
-        assertEquals(gameName, gameResult.getGameName());
+        assertEquals(1, gameResult.getGameID());
+        assertEquals("gameName", gameResult.getGameName());
     }
 
     @Test
-    void createGameShouldThrowIllegalArguments() {
-        final int gameID = -1;
-        final String gameName = null;
-        final GameData game1 = new GameData(gameID, null, null, gameName, new ChessGame());
+    void createGameIllegalArguments() {
+        final GameData game1 = new GameData(-1, null, null, null, new ChessGame());
 
         assertThrows(IllegalArgumentException.class, () -> {
             gameService.createGame(game1);
@@ -106,67 +92,56 @@ public class GameServiceTests {
     }
 
     @Test
-    void shouldGetGame() {
-        final int gameID = 1;
-        final String gameName = "gameName";
-        final GameData game1 = new GameData(gameID, null, null, gameName, new ChessGame());
+    void testGetGame() {
+        final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
 
         gameService.createGame(game1);
-        final var gameResult = gameService.getGame(gameID);
+        final var gameResult = gameService.getGame(1);
 
-        assertEquals(gameID, gameResult.getGameID());
-        assertEquals(gameName, gameResult.getGameName());
+        assertEquals(1, gameResult.getGameID());
+        assertEquals("gameName", gameResult.getGameName());
     }
 
     @Test
-    void shouldReturnNullWhenGameNotFound() {
-        final int gameID = 1;
+    void testReturnNull() {
+        final var gameResult = gameService.getGame(1);
 
-        final var gameResult = gameService.getGame(gameID);
-
-        assertEquals(null, gameResult);
+        assertNull(gameResult);
     }
 
     @Test
-    void shouldGetNextGameId() {
-        final int gameID = 1;
-        final String gameName = "gameName";
-        final GameData game1 = new GameData(gameID, null, null, gameName, new ChessGame());
+    void testGetNextGameId() {
+        final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
 
         gameService.createGame(game1);
         final var nextGameId = gameService.getNextGameID();
 
-        assertEquals(gameID + 1, nextGameId);
+        assertEquals(2, nextGameId);
     }
 
     @Test
-    void shouldGet1AsFirstGameId() {
+    void testGetGameID1() {
         final var nextGameId = gameService.getNextGameID();
 
         assertEquals(1, nextGameId);
     }
 
     @Test
-    void shouldAddParticipant() throws DataAccessException {
-        final int gameID = 1;
-        final String gameName = "gameName";
-        final GameData game1 = new GameData(gameID, null, null, gameName, new ChessGame());
+    void testAddPlayer() throws DataAccessException {
+        final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
 
         gameService.createGame(game1);
-        gameService.addPlayer("username", gameID, ChessGame.TeamColor.WHITE);
+        gameService.addPlayer("username", 1, ChessGame.TeamColor.WHITE);
 
-        final var gameResult = gameService.getGame(gameID);
+        final var gameResult = gameService.getGame(1);
 
         assertEquals("username", gameResult.getWhiteUsername());
     }
 
     @Test
-    void shouldThrowDataAccessExceptionWhenAddParticipantToNonexistentGame() {
-        final int gameID = 1;
-
+    void testThrowDataAccessExceptionAddPlayerToNonexistentGame() {
         assertThrows(DataAccessException.class, () -> {
-            gameService.addPlayer("username", gameID, ChessGame.TeamColor.WHITE);
+            gameService.addPlayer("username", 1, ChessGame.TeamColor.WHITE);
         });
     }
-
 }

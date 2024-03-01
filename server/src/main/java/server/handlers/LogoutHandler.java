@@ -1,5 +1,6 @@
 package server.handlers;
 
+import model.AuthData;
 import service.LogoutService;
 import spark.Request;
 import spark.Response;
@@ -13,18 +14,20 @@ public class LogoutHandler {
         this.logoutService = logoutService;
     }
 
-    public Object handle(Request req, Response res) {
+    public Object handleLogout(Request req, Response res) {
         try {
-            final var authToken = req.headers("Authorization");
+            final String authToken = req.headers("Authorization");
             if (authToken == null) {
                 res.status(401);
                 return new Gson().toJson(Map.of("message", "Error: unauthorized"));
             }
-            final var auth = logoutService.getAuth(authToken);
+
+            final AuthData auth = logoutService.getAuth(authToken);
             if (auth == null) {
                 res.status(401);
                 return new Gson().toJson(Map.of("message", "Error: unauthorized"));
             }
+
             logoutService.deleteAuth(authToken);
             res.status(200);
             return "";

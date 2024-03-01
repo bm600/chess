@@ -5,6 +5,7 @@ import spark.Response;
 import service.ClearService;
 import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class ClearHandler {
@@ -14,14 +15,16 @@ public class ClearHandler {
         this.clearService = clearService;
     }
 
-    public Object handle(Request request, Response response) {
+    public Object handleClear(Request request, Response response) {
+        Map<String, String> responseData = new HashMap<>();
         try {
             clearService.clearAll();
             response.status(200);
             return "";
         } catch (Exception e) {
             response.status(500);
-            return new Gson().toJson(Map.of("message", "Error: Internal server error"));
+            responseData.put("message", "Error: Internal server error");
+            return new Gson().toJson(responseData);
         }
-}
+    }
 }

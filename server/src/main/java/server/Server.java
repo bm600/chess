@@ -26,25 +26,25 @@ public class Server {
 
 
         // Clear
-        Spark.delete("/db", new ClearHandler(clearService)::handle);
+        Spark.delete("/db", new ClearHandler(clearService)::handleClear);
 
         // Register
-        Spark.post("/user", new RegistrationHandler(registrationService)::handle);
+        Spark.post("/user", new RegistrationHandler(registrationService)::handleRegistration);
 
         // Login
-        Spark.post("/session", new LoginHandler(loginService)::handle);
+        Spark.post("/session", new LoginHandler(loginService)::handleLogin);
 
         // Logout
-        Spark.delete("/session", new LogoutHandler(logoutService)::handle);
+        Spark.delete("/session", new LogoutHandler(logoutService)::handleLogout);
 
         // List Games
-        Spark.get("/game", new ListGamesHandler(gameService)::handle);
+        Spark.get("/game", new ListGamesHandler(gameService)::handleListGames);
 
         // Create Game
-        Spark.post("/game", new CreateGameHandler(gameService)::handle);
+        Spark.post("/game", new CreateGameHandler(gameService)::handleCreateGame);
 
         // Join Game
-        Spark.put("/game", new JoinGameHandler(gameService)::handle);
+        Spark.put("/game", new JoinGameHandler(gameService)::handleJoinGame);
 
         Spark.awaitInitialization();
         return Spark.port();

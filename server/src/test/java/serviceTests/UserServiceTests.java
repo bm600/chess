@@ -77,7 +77,7 @@ public class UserServiceTests {
     public void shouldGetNullAuthWhenNotExists() {
         final var authToken = "authToken";
         final var authResult = loginService.getAuth(authToken);
-        assertEquals(null, authResult);
+        assertNull(authResult);
     }
 
     @Test
@@ -125,7 +125,7 @@ public class UserServiceTests {
     public void shouldGetNullUserByAuthTokenWhenNotExists() {
         final var authToken = "authToken";
         final var userResult = gameService.getUserByAuth(authToken);
-        assertEquals(null, userResult);
+        assertNull(userResult);
     }
 
     @Test
@@ -167,7 +167,7 @@ public class UserServiceTests {
 
         final var authResult = loginService.getAuth(auth.getAuthToken());
 
-        assertEquals(null, authResult);
+        assertNull(authResult);
     }
 
     @Test
@@ -181,7 +181,7 @@ public class UserServiceTests {
     public void shouldGetNullWhenNoAuthByUsername() {
         final var username = "username";
         final var authResult = gameService.getUserByAuth(username);
-        assertEquals(null, authResult);
+        assertNull(authResult);
     }
 
 
@@ -198,7 +198,7 @@ public class UserServiceTests {
 
         final var userResult = loginService.getUser(username);
 
-        assertEquals(null, userResult);
+        assertNull(userResult);
     }
 
     @Test
