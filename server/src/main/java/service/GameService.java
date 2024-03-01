@@ -1,23 +1,34 @@
 package service;
 
 import chess.ChessGame;
+import dataAccess.AuthDAO;
 import dataAccess.DataAccessException;
 import dataAccess.GameDAO;
+import dataAccess.UserDAO;
 import model.GameData;
 import model.UserData;
 
 public class GameService {
     private GameDAO gameDAO;
+    private AuthDAO authDAO;
 
-    public GameService(GameDAO gameDAO){
+    private UserDAO userDAO;
+
+    public GameService(GameDAO gameDAO, AuthDAO authDAO, UserDAO userDAO) {
         this.gameDAO = gameDAO;
+        this.authDAO = authDAO;
+        this.userDAO = userDAO;
     }
 
-    public UserData getUserByAuth(String authToken){
-        throw new RuntimeException("NOT IMPLEMENTED");
-    }//TODO possibly delete this
+    public UserData getUserByAuth(String authToken) {
+        final var auth = authDAO.getAuth(authToken);
+        if (auth == null) {
+            return null;
+        }
+        return userDAO.getUser(auth.getUsername());
+    }
 
-    public GameData getGame(int gameID){
+    public GameData getGame(int gameID) {
         return gameDAO.getGame(gameID);
     }
 
@@ -47,21 +58,21 @@ public class GameService {
         gameDAO.updateGame(newGame);
     }
 
-    public int getNextGameID(){
+    public int getNextGameID() {
         return gameDAO.getNextGameId();
     }
 
-    public GameData createGame(GameData game){
-        if(game.getGameName() != null & game.getGameID() >= 0){
-            return gameDAO.createGame(game);
-        }
-        else{
-            throw new IllegalArgumentException("Invalid game");
-        }
+    public GameData createGame(GameData gameData) {
+        if (gameData.getGameID() < 0 || gameData.getGameName() == null)
+            throw new IllegalArgumentException("Invalid game data");
+        return gameDAO.createGame(gameData);
     }
 
-    public GameData[] listGames(String username){
+    public GameData[] listGames(String username) {
         return gameDAO.listGames();
     }
 
+    public void deleteAllGames() {
+        gameDAO.deleteAllGames();
+    }
 }

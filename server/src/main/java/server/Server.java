@@ -19,7 +19,7 @@ public class Server {
         UserDAO userDAO = new UserDAO();
 
         ClearService clearService = new ClearService(userDAO, authDAO, gameDAO);
-        GameService gameService = new GameService(gameDAO);
+        GameService gameService = new GameService(gameDAO, authDAO, userDAO);
         LoginService loginService = new LoginService(userDAO, authDAO);
         LogoutService logoutService = new LogoutService(authDAO);
         RegistrationService registrationService = new RegistrationService(userDAO, authDAO);

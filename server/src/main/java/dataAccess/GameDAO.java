@@ -15,11 +15,10 @@ public class GameDAO {
         return gamesList.get(gameID);
     }
 
-    public GameData updateGame(GameData newGame) throws DataAccessException {
+    public void updateGame(GameData newGame) throws DataAccessException {
         final var currGame = gamesList.get(newGame.getGameID());
         if (currGame != null){
             gamesList.put(newGame.getGameID(), newGame);
-            return newGame;
         }
         else{
             throw new DataAccessException("Game " + newGame.getGameID() + " is not a valid game.");

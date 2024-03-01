@@ -5,6 +5,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 
 import chess.ChessGame;
+import model.AuthData;
 import model.GameData;
 import service.GameService;
 import spark.Request;
