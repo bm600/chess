@@ -26,7 +26,7 @@ public class Server {
 
 
         // Clear
-        Spark.delete("/db", new ClearHandler(clearService)::handleClear);
+        Spark.delete("/db", (request, response) -> new ClearHandler(clearService).handleClear(response));
 
         // Register
         Spark.post("/user", new RegistrationHandler(registrationService)::handleRegistration);

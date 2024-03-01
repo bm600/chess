@@ -1,5 +1,6 @@
 package server.handlers;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
@@ -17,31 +18,35 @@ public class ListGamesHandler {
         this.gameService = gameService;
     }
 
-    public Object handleListGames(Request req, Response res) {
+    public Object handleListGames(Request request, Response response) {
+        Map<String, Object> responseData = new HashMap<>();
+
         try {
-            String authToken = req.headers("Authorization");
+            String authToken = request.headers("Authorization");
 
             if (authToken == null) {
-                res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+                response.status(401);
+                responseData.put("message", "Error: Unauthorized");
+                return new Gson().toJson(responseData);
             }
 
             UserData user = gameService.getUserByAuth(authToken);
 
             if (user == null) {
-                res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+                response.status(401);
+                responseData.put("message", "Error: Unauthorized");
+                return new Gson().toJson(responseData);
             }
 
             GameData[] games = gameService.listGames(user.getUsername());
 
-            res.status(200);
-            return new Gson().toJson(Map.of(
-                    "games", games
-            ));
-        } catch(Exception e) {
-            res.status(500);
-            return new Gson().toJson(Map.of("message", "Error: Internal server error"));
+            response.status(200);
+            responseData.put("games", games);
+            return new Gson().toJson(responseData);
+        } catch (Exception e) {
+            response.status(500);
+            responseData.put("message", "Error: Internal server error");
+            return new Gson().toJson(responseData);
         }
     }
 }

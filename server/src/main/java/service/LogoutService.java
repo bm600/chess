@@ -4,7 +4,7 @@ import dataAccess.AuthDAO;
 import model.AuthData;
 
 public class LogoutService {
-    private AuthDAO authDAO;
+    private final AuthDAO authDAO;
 
     public LogoutService(AuthDAO authDAO){
         this.authDAO = authDAO;

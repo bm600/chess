@@ -5,6 +5,8 @@ import model.UserData;
 import service.LoginService;
 import spark.Request;
 import spark.Response;
+
+import java.util.HashMap;
 import java.util.Map;
 import com.google.gson.Gson;
 public class LoginHandler {
@@ -17,41 +19,54 @@ public class LoginHandler {
 
     private static record RequestBody(String username, String password) {
     }
-    public Object handleLogin(Request req, Response res) {
-        String username;
-        String password;
+    public Object handleLogin(Request request, Response response) {
+        Map<String, Object> responseData = new HashMap<>();
 
         try {
-            final RequestBody requestBody = new Gson().fromJson(req.body(), RequestBody.class);
-            username = requestBody.username();
-            password = requestBody.password();
+            String username = null;
+            String password = null;
+
+            RequestData requestData = parseRequestData(request);
+            if (requestData != null) {
+                username = requestData.username();
+                password = requestData.password();
+            }
 
             if (username == null || password == null) {
-                throw new Exception();
+                response.status(400);
+                responseData.put("message", "Error: Bad request");
+                return new Gson().toJson(responseData);
             }
-        } catch(Exception e) {
-            res.status(400);
-            return new Gson().toJson(Map.of("message", "Error: bad request"));
-        }
 
-        try {
-            final UserData user = loginService.getUser(username);
+            UserData user = loginService.getUser(username);
 
             if (user == null || !user.getPassword().equals(password)) {
-                res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+                response.status(401);
+                responseData.put("message", "Error: Unauthorized");
+                return new Gson().toJson(responseData);
             }
 
-            final AuthData newAuth = loginService.createAuth(username);
+            AuthData newAuth = loginService.createAuth(username);
 
-            res.status(200);
-            return new Gson().toJson(Map.of(
-                    "username", username,
-                    "authToken", newAuth.getAuthToken()
-            ));
-        } catch(Exception e) {
-            res.status(500);
-            return new Gson().toJson(Map.of("message", "Error: Internal server error"));
+            response.status(200);
+            responseData.put("username", username);
+            responseData.put("authToken", newAuth.getAuthToken());
+            return new Gson().toJson(responseData);
+        } catch (Exception e) {
+            response.status(500);
+            responseData.put("message", "Error: Internal server error");
+            return new Gson().toJson(responseData);
         }
+    }
+
+    private RequestData parseRequestData(Request request) {
+        try {
+            return new Gson().fromJson(request.body(), RequestData.class);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static record RequestData(String username, String password) {
     }
 }

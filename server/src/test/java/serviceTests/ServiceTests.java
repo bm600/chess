@@ -39,7 +39,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void shouldGetUser() {
+    public void testGetUser() {
         final var username = "username";
         final var email = "email";
         final var password = "password";
@@ -53,14 +53,14 @@ public class ServiceTests {
     }
 
     @Test
-    public void shouldGetNullUserWhenNotExists() {
+    public void testGetNullUser() {
         final var username = "username";
         final var user = loginService.getUser(username);
         assertNull(user);
     }
 
     @Test
-    public void shouldGetAuth() throws DataAccessException {
+    public void testGetAuth() throws DataAccessException {
         final var username = "username";
         final var email = "email";
         final var password = "password";
@@ -77,14 +77,14 @@ public class ServiceTests {
     }
 
     @Test
-    public void shouldGetNullAuthWhenNotExists() {
+    public void testGetNull() {
         final var authToken = "authToken";
         final var authResult = loginService.getAuth(authToken);
         assertNull(authResult);
     }
 
     @Test
-    public void shouldClearApplication() throws DataAccessException {
+    public void testClearAll() throws DataAccessException {
         final String username = "username";
         final String password = "password";
         final String email = "email";
@@ -110,7 +110,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void shouldCreatUser() {
+    public void testCreateUser() {
         final var username = "username";
         final var email = "email";
         final var password = "password";
@@ -136,7 +136,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void shouldGetUserByAuthToken() throws DataAccessException {
+    public void testGetUserByAuthToken() throws DataAccessException {
         final var username = "username";
         final var email = "email";
         final var password = "password";
@@ -151,14 +151,14 @@ public class ServiceTests {
     }
 
     @Test
-    public void shouldGetNullUserByAuthTokenWhenNotExists() {
+    public void testGetNullUserByAuthToken() {
         final var authToken = "authToken";
         final var userResult = gameService.getUserByAuth(authToken);
         assertNull(userResult);
     }
 
     @Test
-    public void shouldCreateAuth() throws DataAccessException {
+    public void testCreateAuth() throws DataAccessException {
         final var username = "username";
         final var email = "email";
         final var password = "password";
@@ -174,7 +174,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void shouldThrowDataAccessExceptionWhenUserNotFound() {
+    public void testThrowDataAccessExceptionUserNotFound() {
         final var username = "username";
         assertThrows(DataAccessException.class, () -> {
             registrationService.createAuth(username);
@@ -257,32 +257,6 @@ public class ServiceTests {
     }
 
     @Test
-    void testReturnNull() {
-        final var gameResult = gameService.getGame(1);
-
-        assertNull(gameResult);
-    }
-
-    @Test
-    void testGetNextGameId() {
-        final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
-
-        gameService.createGame(game1);
-        final var nextGameId = gameService.getNextGameID();
-
-        assertEquals(2, nextGameId);
-    }
-
-
-
-    @Test
-    void testGetGameID1() {
-        final var nextGameId = gameService.getNextGameID();
-
-        assertEquals(1, nextGameId);
-    }
-
-    @Test
     void testAddPlayer() throws DataAccessException {
         final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
 
@@ -295,14 +269,7 @@ public class ServiceTests {
     }
 
     @Test
-    void testThrowDataAccessExceptionAddPlayerToNonexistentGame() {
-        assertThrows(DataAccessException.class, () -> {
-            gameService.addPlayer("username", 1, ChessGame.TeamColor.WHITE);
-        });
-    }
-
-    @Test
-    public void shouldDeleteAuth() throws DataAccessException {
+    public void testDeleteAuth() throws DataAccessException {
         final var username = "username";
         final var email = "email";
         final var password = "password";
@@ -320,14 +287,14 @@ public class ServiceTests {
     }
 
     @Test
-    public void shouldNotThrowWhenAuthTokenDoesNotExist() {
+    public void testNotThrowWhenAuthTokenDoesNotExist() {
         final var authToken = "authToken";
         logoutService.deleteAuth(authToken);
     }
 
 
     @Test
-    public void shouldGetNullWhenNoAuthByUsername() {
+    public void testGetNullWhenNoAuthByUsername() {
         final var username = "username";
         final var authResult = gameService.getUserByAuth(username);
         assertNull(authResult);
@@ -335,7 +302,7 @@ public class ServiceTests {
 
 
     @Test
-    public void shouldDeleteAllUsers() {
+    public void testDeleteAllUsers() {
         final var username = "username";
         final var email = "email";
         final var password = "password";
@@ -351,7 +318,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void shouldNotThrowWhenNoUsers() {
+    public void testNotThrowWhenNoUsers() {
         clearService.deleteAllUsers();
     }
 

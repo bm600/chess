@@ -1,11 +1,13 @@
 package server.handlers;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
 
 import chess.ChessGame;
 import model.GameData;
+import model.UserData;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -20,34 +22,33 @@ public class CreateGameHandler {
     }
 
     public Object handleCreateGame(Request req, Response res) {
-        String gameName;
+        Map<String, Object> responseData = new HashMap<>();
 
         try {
+            String gameName;
+
             final RequestBody requestBody = new Gson().fromJson(req.body(), RequestBody.class);
             gameName = requestBody.gameName();
             if (gameName == null) {
                 throw new Exception();
             }
-        } catch (Exception e) {
-            res.status(400);
-            return new Gson().toJson(Map.of("message", "Error: bad request"));
-        }
 
-        try {
             final String authToken = req.headers("Authorization");
             if (authToken == null) {
                 res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+                responseData.put("message", "Error: Unauthorized");
+                return new Gson().toJson(responseData);
             }
 
-            final var user = gameService.getUserByAuth(authToken);
+            final UserData user = gameService.getUserByAuth(authToken);
             if (user == null) {
                 res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+                responseData.put("message", "Error: Unauthorized");
+                return new Gson().toJson(responseData);
             }
 
             final int gameId = gameService.getNextGameID();
-            final var gameData = gameService.createGame(new GameData(
+            final GameData gameData = gameService.createGame(new GameData(
                     gameId,
                     null,
                     null,
@@ -57,12 +58,12 @@ public class CreateGameHandler {
             gameService.createGame(gameData);
 
             res.status(200);
-            return new Gson().toJson(Map.of(
-                    "gameID", gameId
-            ));
+            responseData.put("gameID", gameId);
+            return new Gson().toJson(responseData);
         } catch (Exception e) {
             res.status(500);
-            return "Error: Internal server error";
+            responseData.put("message", "Error: Internal server error");
+            return new Gson().toJson(responseData);
         }
     }
 }

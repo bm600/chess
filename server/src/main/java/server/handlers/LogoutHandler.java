@@ -5,6 +5,8 @@ import service.LogoutService;
 import spark.Request;
 import spark.Response;
 import com.google.gson.Gson;
+
+import java.util.HashMap;
 import java.util.Map;
 
 public class LogoutHandler {
@@ -14,26 +16,37 @@ public class LogoutHandler {
         this.logoutService = logoutService;
     }
 
-    public Object handleLogout(Request req, Response res) {
+    public Object handleLogout(Request request, Response response) {
+        Map<String, Object> responseData = new HashMap<>();
+
         try {
-            final String authToken = req.headers("Authorization");
+            String authToken = extractAuthToken(request);
+
             if (authToken == null) {
-                res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+                response.status(401);
+                responseData.put("message", "Error: Unauthorized");
+                return new Gson().toJson(responseData);
             }
 
-            final AuthData auth = logoutService.getAuth(authToken);
-            if (auth == null) {
-                res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            AuthData authData = logoutService.getAuth(authToken);
+
+            if (authData == null) {
+                response.status(401);
+                responseData.put("message", "Error: Unauthorized");
+                return new Gson().toJson(responseData);
             }
 
             logoutService.deleteAuth(authToken);
-            res.status(200);
+            response.status(200);
             return "";
-        } catch(Exception e) {
-            res.status(500);
-            return "Error: Internal server error";
+        } catch (Exception e) {
+            response.status(500);
+            responseData.put("message", "Error: Internal server error");
+            return new Gson().toJson(responseData);
         }
+    }
+
+    private String extractAuthToken(Request request) {
+        return request.headers("Authorization");
     }
 }

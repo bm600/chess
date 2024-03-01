@@ -1,11 +1,13 @@
 package server.handlers;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.google.gson.Gson;
 
 import chess.ChessGame;
 import model.GameData;
+import model.UserData;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -20,57 +22,59 @@ public class JoinGameHandler {
         this.gameService = gameService;
     }
 
-    public Object handleJoinGame(Request req, Response res) {
-        String playerColorString;
-        int gameId;
+    public Object handleJoinGame(Request request, Response response) {
+        Map<String, Object> responseData = new HashMap<>();
 
         try {
-            final RequestBody requestBody = new Gson().fromJson(req.body(), RequestBody.class);
+            String playerColorString;
+            int gameId;
+
+            final RequestBody requestBody = new Gson().fromJson(request.body(), RequestBody.class);
             playerColorString = requestBody.playerColor();
             gameId = requestBody.gameID();
             if (gameId < 0) {
                 throw new Exception();
             }
-        } catch (Exception e) {
-            res.status(400);
-            return new Gson().toJson(Map.of("message", "Error: bad request"));
-        }
 
-        try {
-            final String authToken = req.headers("Authorization");
+            String authToken = request.headers("Authorization");
             if (authToken == null) {
-                res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: Unauthorized"));
+                response.status(401);
+                responseData.put("message", "Error: Unauthorized");
+                return new Gson().toJson(responseData);
             }
-            final var user = gameService.getUserByAuth(authToken);
+            final UserData user = gameService.getUserByAuth(authToken);
             if (user == null) {
-                res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: Unauthorized"));
+                response.status(401);
+                responseData.put("message", "Error: Unauthorized");
+                return new Gson().toJson(responseData);
             }
 
             final ChessGame.TeamColor playerColor = playerColorString == null ? null : ChessGame.TeamColor.valueOf(playerColorString);
 
             final GameData game = gameService.getGame(gameId);
             if (game == null) {
-                res.status(400);
-                return new Gson().toJson(Map.of("message", "Error: bad request"));
+                response.status(400);
+                responseData.put("message", "Error: Bad request");
+                return new Gson().toJson(responseData);
             }
 
             if (playerColor != null) {
                 final String requestedColorUsername = playerColor == ChessGame.TeamColor.WHITE ? game.getWhiteUsername()
                         : game.getBlackUsername();
                 if (requestedColorUsername != null) {
-                    res.status(403);
-                    return new Gson().toJson(Map.of("message", "Error: already taken"));
+                    response.status(403);
+                    responseData.put("message", "Error: Already taken");
+                    return new Gson().toJson(responseData);
                 }
                 gameService.addPlayer(user.getUsername(), gameId, playerColor);
             }
 
-            res.status(200);
+            response.status(200);
             return "";
         } catch (Exception e) {
-            res.status(500);
-            return "Error: Internal server error";
+            response.status(500);
+            responseData.put("message", "Error: Internal server error");
+            return new Gson().toJson(responseData);
         }
     }
 }

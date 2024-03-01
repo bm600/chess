@@ -9,14 +9,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ClearHandler {
-    private ClearService clearService;
+    private final ClearService clearService;
 
     public ClearHandler(ClearService clearService){
         this.clearService = clearService;
     }
 
-    public Object handleClear(Request request, Response response) {
+    public Object handleClear(Response response) {
         Map<String, String> responseData = new HashMap<>();
+
         try {
             clearService.clearAll();
             response.status(200);

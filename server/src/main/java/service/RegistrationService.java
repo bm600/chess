@@ -7,8 +7,8 @@ import model.AuthData;
 import model.UserData;
 
 public class RegistrationService {
-    private UserDAO userDAO;
-    private AuthDAO authDAO;
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
     public RegistrationService(UserDAO userDAO, AuthDAO authDAO){
         this.authDAO = authDAO;

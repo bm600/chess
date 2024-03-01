@@ -8,8 +8,8 @@ import model.UserData;
 import org.eclipse.jetty.util.log.Log;
 
 public class LoginService {
-    private UserDAO userDAO;
-    private AuthDAO authDAO;
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
     public LoginService(UserDAO userDAO, AuthDAO authDAO){
         this.userDAO = userDAO;

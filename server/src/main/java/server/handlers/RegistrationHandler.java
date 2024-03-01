@@ -15,19 +15,17 @@ public class RegistrationHandler {
         this.registrationService = registrationService;
     }
 
-    private static record RequestBody(String username, String password, String email) {
+    private record RequestBody(String username, String password, String email) {
     }
 
     public Object handleRegistration(Request req, Response res) {
-        String username;
-        String password;
         String email;
+        String password;
+        String username;
 
         try {
             final RequestBody requestBody = new Gson().fromJson(req.body(), RequestBody.class);
-            username = requestBody.username();
-            password = requestBody.password();
-            email = requestBody.email();
+            password = requestBody.password(); username = requestBody.username(); email = requestBody.email();
             if (username == null || password == null || email == null) {
                 throw new Exception();
             }
@@ -39,23 +37,17 @@ public class RegistrationHandler {
         }
 
         try {
-            // Look up the user to see if they already exist
             final UserData existingUser = registrationService.getUser(username);
-
             if (existingUser != null) {
                 res.status(403);
                 return new Gson().toJson(Map.of(
                         "message", "Error: already taken"
                 ));
             }
-
-            // If the user does not exist, create them
-            registrationService.createUser(new UserData(username, password, email));
-
-            // Create a new session for the user
+            var newUser = new UserData(username, password, email);
+            registrationService.createUser(newUser);
             final AuthData auth = registrationService.createAuth(username);
 
-            // Respond with the auth token and username
             return new Gson().toJson(Map.of(
                     "username", username,
                     "authToken", auth.getAuthToken()

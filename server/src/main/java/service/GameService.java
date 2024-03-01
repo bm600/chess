@@ -9,10 +9,10 @@ import model.GameData;
 import model.UserData;
 
 public class GameService {
-    private GameDAO gameDAO;
-    private AuthDAO authDAO;
+    private final GameDAO gameDAO;
+    private final AuthDAO authDAO;
 
-    private UserDAO userDAO;
+    private final UserDAO userDAO;
 
     public GameService(GameDAO gameDAO, AuthDAO authDAO, UserDAO userDAO) {
         this.gameDAO = gameDAO;
