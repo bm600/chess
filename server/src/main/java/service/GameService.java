@@ -1,20 +1,20 @@
 package service;
 
 import chess.ChessGame;
-import dataAccess.AuthDAO;
+import dataAccess.MemoryAuthDAO;
 import dataAccess.DataAccessException;
-import dataAccess.GameDAO;
-import dataAccess.UserDAO;
+import dataAccess.MemoryGameDAO;
+import dataAccess.MemoryUserDAO;
 import model.GameData;
 import model.UserData;
 
 public class GameService {
-    private final GameDAO gameDAO;
-    private final AuthDAO authDAO;
+    private final MemoryGameDAO gameDAO;
+    private final MemoryAuthDAO authDAO;
 
-    private final UserDAO userDAO;
+    private final MemoryUserDAO userDAO;
 
-    public GameService(GameDAO gameDAO, AuthDAO authDAO, UserDAO userDAO) {
+    public GameService(MemoryGameDAO gameDAO, MemoryAuthDAO authDAO, MemoryUserDAO userDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
         this.userDAO = userDAO;

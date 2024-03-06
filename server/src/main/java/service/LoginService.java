@@ -1,17 +1,16 @@
 package service;
 
-import dataAccess.AuthDAO;
+import dataAccess.MemoryAuthDAO;
 import dataAccess.DataAccessException;
-import dataAccess.UserDAO;
+import dataAccess.MemoryUserDAO;
 import model.AuthData;
 import model.UserData;
-import org.eclipse.jetty.util.log.Log;
 
 public class LoginService {
-    private final UserDAO userDAO;
-    private final AuthDAO authDAO;
+    private final MemoryUserDAO userDAO;
+    private final MemoryAuthDAO authDAO;
 
-    public LoginService(UserDAO userDAO, AuthDAO authDAO){
+    public LoginService(MemoryUserDAO userDAO, MemoryAuthDAO authDAO){
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }

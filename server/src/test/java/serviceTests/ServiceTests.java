@@ -7,18 +7,18 @@ import model.GameData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import dataAccess.AuthDAO;
-import dataAccess.UserDAO;
+import dataAccess.MemoryAuthDAO;
+import dataAccess.MemoryUserDAO;
 import model.UserData;
 import service.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTests {
-    AuthDAO authDAO;
-    UserDAO userDAO;
+    MemoryAuthDAO authDAO;
+    MemoryUserDAO userDAO;
 
-    GameDAO gameDAO;
+    MemoryGameDAO gameDAO;
     LoginService loginService;
     LogoutService logoutService;
     RegistrationService registrationService;
@@ -28,9 +28,9 @@ public class ServiceTests {
 
     @BeforeEach
     public void beforeEach() {
-        authDAO = new AuthDAO();
-        userDAO = new UserDAO();
-        gameDAO = new GameDAO();
+        authDAO = new MemoryAuthDAO();
+        userDAO = new MemoryUserDAO();
+        gameDAO = new MemoryGameDAO();
         loginService = new LoginService(userDAO, authDAO);
         logoutService = new LogoutService(authDAO);
         registrationService = new RegistrationService(userDAO, authDAO);
