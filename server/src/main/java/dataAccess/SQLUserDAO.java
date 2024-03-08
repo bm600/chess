@@ -7,7 +7,6 @@ import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.HashMap;
 
-import static dataAccess.DatabaseManager.password;
 import static java.sql.Statement.RETURN_GENERATED_KEYS;
 import static java.sql.Types.NULL;
 
@@ -61,8 +60,13 @@ public class SQLUserDAO extends SQLDAO implements UserDAO{
         return null;
     }
 
-    public UserData createUser(UserData userData) {
-
+    public UserData createUser(UserData userData) throws DataAccessException {
+        var username = userData.getUsername();
+        var password = userData.getPassword();
+        var email = userData.getEmail();
+        var statement = "INSERT INTO %s (username, password, email) VALUES (?, ?, ?)";
+        executeUpdate(statement, username, password, email);
+        return userData;
     }
 
 }
