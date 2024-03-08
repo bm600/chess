@@ -26,13 +26,8 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
                     """, TABLE)
     };
 
-    //TODO this static block may not work so check up on it fr fr
-    static {
-        try {
-            configureDatabase(createStatements);
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
-        }
+    public SQLGameDAO() throws DataAccessException {
+        configureDatabase(createStatements);
     }
     @Override
     public void deleteAllGames() throws DataAccessException {

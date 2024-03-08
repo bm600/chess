@@ -5,6 +5,8 @@ import server.handlers.*;
 import service.*;
 import spark.*;
 
+import static dataAccess.DatabaseManager.createDatabase;
+
 public class Server {
 
     public int run(int desiredPort) {
@@ -17,7 +19,7 @@ public class Server {
         GameDAO gameDAO;
 
         try {
-            DatabaseManager.createDatabase();
+            createDatabase();
             authDAO = new SQLAuthDAO();
             userDAO = new SQLUserDAO();
             gameDAO = new SQLGameDAO();

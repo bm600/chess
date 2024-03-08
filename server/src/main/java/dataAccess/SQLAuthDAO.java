@@ -24,7 +24,10 @@ public class SQLAuthDAO extends SQLDAO implements AuthDAO{
                     """, TABLE)
     };
 
-    //TODO this static block may not work so check up on it fr fr
+    public SQLAuthDAO() throws DataAccessException {
+        configureDatabase(createStatements);
+    }
+
     static {
         try {
             configureDatabase(createStatements);

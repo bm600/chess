@@ -61,6 +61,10 @@ public class SQLUserDAO extends SQLDAO implements UserDAO{
         return null;
     }
 
+    public SQLUserDAO() throws DataAccessException {
+        configureDatabase(createStatements);
+    }
+
     public UserData createUser(UserData userData) throws DataAccessException {
         var username = userData.getUsername();
         var password = userData.getPassword();
