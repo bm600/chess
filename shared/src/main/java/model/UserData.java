@@ -1,5 +1,7 @@
 package model;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import java.util.Objects;
 
 public class UserData {

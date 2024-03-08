@@ -47,7 +47,7 @@ public class SQLUserDAO extends SQLDAO implements UserDAO{
 
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var us_statement = String.format("SELECT password FROM %s WHERE username=?", TABLE);
+            var us_statement = String.format("SELECT password, email FROM %s WHERE username=?", TABLE);
             try (var us = conn.prepareStatement(us_statement)) {
                 us.setString(1, username);
                 try (var rs = us.executeQuery()) {
@@ -69,16 +69,19 @@ public class SQLUserDAO extends SQLDAO implements UserDAO{
     }
 
     public UserData createUser(UserData userData) throws DataAccessException {
+        if (userData.getUsername() == null || userData.getEmail() == null || userData.getPassword() == null) {
+            throw new DataAccessException("Invalid user data");
+        }
         var username = userData.getUsername();
         var password = userData.getPassword();
         var email = userData.getEmail();
 
         //Password Encryption
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String hashedPassword = encoder.encode(password);
+        //BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        //String hashedPassword = encoder.encode(password);
 
         var statement = String.format("INSERT INTO %s (username, password, email) VALUES (?, ?, ?)", TABLE);
-        executeUpdate(statement, username, hashedPassword, email);
+        executeUpdate(statement, username, password, email);
         return userData;
     }
 

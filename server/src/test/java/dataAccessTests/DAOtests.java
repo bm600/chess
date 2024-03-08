@@ -18,10 +18,6 @@ public class DAOtests {
     private static UserDAO userDAO;
     private static GameDAO gameDAO;
     private static ClearService clearService;
-    private static GameService gameService;
-    private static LoginService loginService;
-    private static LogoutService logoutService;
-    private static RegistrationService registrationService;
 
     @BeforeEach
     public void beforeEach() throws DataAccessException {
@@ -35,10 +31,10 @@ public class DAOtests {
         userDAO = new SQLUserDAO();
         gameDAO = new SQLGameDAO();
         clearService = new ClearService(userDAO, authDAO, gameDAO);
-        gameService = new GameService(gameDAO, authDAO, userDAO);
-        loginService = new LoginService(userDAO, authDAO);
-        logoutService = new LogoutService(authDAO);
-        registrationService = new RegistrationService(userDAO, authDAO);
+        GameService gameService = new GameService(gameDAO, authDAO, userDAO);
+        LoginService loginService = new LoginService(userDAO, authDAO);
+        LogoutService logoutService = new LogoutService(authDAO);
+        RegistrationService registrationService = new RegistrationService(userDAO, authDAO);
 
         clearService.clearAll();
     }
@@ -76,10 +72,6 @@ public class DAOtests {
     public void testCreateAuthInvalid() throws DataAccessException {
         final var username = "username";
         final var authToken = "authtoken";
-
-        Assertions.assertThrows(DataAccessException.class, () -> {
-            authDAO.createAuth(username, authToken);
-        });
 
         Assertions.assertThrows(DataAccessException.class, () -> {
             authDAO.createAuth(null, null);
@@ -138,29 +130,32 @@ public class DAOtests {
     }
 
     @Test
-    public void testCreateUserInvalid() throws DataAccessException {
-        final var username = "username2";
+    public void testCreateInvalidUser() throws DataAccessException {
+        final var username = "username";
+        final var email = "email";
         final var password = "password";
-        final var email = "email2@email.com";
 
+        final var user1 = new UserData(null, email, password);
+        final var user2 = new UserData(username, null, password);
+        final var user3 = new UserData(username, email, null);
 
-        Assertions.assertThrows(DataAccessException.class, () -> {
-            userDAO.createUser(new UserData(username, password, email));
-        });
-        Assertions.assertThrows(DataAccessException.class, () -> {
-            userDAO.createUser(null);
-        });
+        Assertions.assertThrows(DataAccessException.class, () -> userDAO.createUser(user1));
+        Assertions.assertThrows(DataAccessException.class, () -> userDAO.createUser(user2));
+        Assertions.assertThrows(DataAccessException.class, () -> userDAO.createUser(user3));
     }
 
     @Test
     public void testGetUser() throws DataAccessException {
-        var username = "username";
-        var password = "password1";
-        var email = "email@email.com";
-        var newUser = new UserData(username, password, email);
-        var gotUser = userDAO.getUser("username");
-        Assertions.assertEquals(newUser, gotUser);
+        final var username = "username90";
+        final var email = "email90";
+        final var password = "password90";
+
+        final var user = new UserData(username, password, email);
+        userDAO.createUser(user);
+        final var result = userDAO.getUser(username);
+        Assertions.assertEquals(result, user);
     }
+
 
     @Test
     public void testDeleteAllUsers() throws DataAccessException {

@@ -2,6 +2,7 @@ package server.handlers;
 
 import model.AuthData;
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import service.RegistrationService;
 import com.google.gson.Gson;
 import spark.Request;
@@ -44,8 +45,13 @@ public class RegistrationHandler {
                         "message", "Error: already taken"
                 ));
             }
-            var newUser = new UserData(username, password, email);
+
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+            String hashedPassword = encoder.encode(password);
+            var newUser = new UserData(username, hashedPassword, email);
+
             registrationService.createUser(newUser);
+
             final AuthData auth = registrationService.createAuth(username);
 
             return new Gson().toJson(Map.of(
