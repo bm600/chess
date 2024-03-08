@@ -4,7 +4,7 @@ import model.UserData;
 
 import java.util.HashMap;
 
-public class MemoryUserDAO {
+public class MemoryUserDAO implements UserDAO{
     private static HashMap<String, UserData> userList = new HashMap<String, UserData>();
 
     public void deleteAllUsers() {

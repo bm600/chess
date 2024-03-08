@@ -1,5 +1,6 @@
 package server;
 
+import dataAccess.AuthDAO;
 import dataAccess.MemoryAuthDAO;
 import dataAccess.MemoryGameDAO;
 import dataAccess.MemoryUserDAO;
