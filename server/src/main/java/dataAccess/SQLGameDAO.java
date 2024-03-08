@@ -6,6 +6,7 @@ import model.AuthData;
 import model.GameData;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class SQLGameDAO extends SQLDAO implements GameDAO {
 
@@ -82,8 +83,28 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
     }
 
     @Override
-    public GameData[] listGames() {
-        return new GameData[0];
+    public GameData[] listGames() throws DataAccessException{
+        var result = new ArrayList<GameData>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT * FROM game";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        var gameId = rs.getInt("gameId");
+                        var wUsername = rs.getString("wUsername");
+                        var bUsername = rs.getString("bUsername");
+                        var gameName = rs.getString("gameName");
+                        var gameJSON = rs.getString("game");
+                        var game = new Gson().fromJson(gameJSON, ChessGame.class);
+                        result.add(new GameData(gameId,wUsername, bUsername, gameName, game));
+
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+        return result.toArray(new GameData[0]);
     }
 
     @Override
