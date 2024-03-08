@@ -37,13 +37,13 @@ public class SQLUserDAO extends SQLDAO implements UserDAO{
     }
 
     public void deleteAllUsers() throws DataAccessException {
-        var statement = "TRUNCATE %s";
+        var statement = String.format("TRUNCATE %s", TABLE);
         executeUpdate(statement);
     }
 
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var us_statement = "SELECT password FROM user WHERE username=?";
+            var us_statement = String.format("SELECT password FROM %s WHERE username=?", TABLE);
             try (var us = conn.prepareStatement(us_statement)) {
                 us.setString(1, username);
                 try (var rs = us.executeQuery()) {
@@ -61,10 +61,11 @@ public class SQLUserDAO extends SQLDAO implements UserDAO{
     }
 
     public UserData createUser(UserData userData) throws DataAccessException {
+        //TODO Password hashing
         var username = userData.getUsername();
         var password = userData.getPassword();
         var email = userData.getEmail();
-        var statement = "INSERT INTO %s (username, password, email) VALUES (?, ?, ?)";
+        var statement = String.format("INSERT INTO %s (username, password, email) VALUES (?, ?, ?)", TABLE);
         executeUpdate(statement, username, password, email);
         return userData;
     }

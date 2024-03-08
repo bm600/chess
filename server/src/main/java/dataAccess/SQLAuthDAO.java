@@ -17,7 +17,7 @@ public class SQLAuthDAO extends SQLDAO implements AuthDAO{
             String.format("""
                     CREATE TABLE IF NOT EXISTS %s (
                         `username` varchar(256) NOT NULL,
-                        `authToken varchar(256) NOT NULL,
+                        `authToken` varchar(256) NOT NULL,
                         PRIMARY KEY (`authToken`),
                         INDEX(username)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
@@ -35,7 +35,7 @@ public class SQLAuthDAO extends SQLDAO implements AuthDAO{
 
     @Override
     public void deleteAllAuth() throws DataAccessException {
-        var statement = "TRUNCATE %s";
+        var statement = String.format("TRUNCATE %s", TABLE);
         executeUpdate(statement);
     }
 
@@ -43,7 +43,7 @@ public class SQLAuthDAO extends SQLDAO implements AuthDAO{
     public AuthData createAuth(String username) throws DataAccessException {
         String authToken = AuthTokenGenerator.makeToken();
         AuthData newAuth = new AuthData(authToken, username);
-        var statement = "INSERT INTO %s (authToken, username) VALUES (?, ?)";
+        var statement = String.format("INSERT INTO %s (authToken, username) VALUES (?, ?)", TABLE);
         executeUpdate(statement, newAuth.getAuthToken(), newAuth.getUsername());
         return newAuth;
     }
@@ -51,7 +51,7 @@ public class SQLAuthDAO extends SQLDAO implements AuthDAO{
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username FROM %s WHERE authToken=?";
+            var statement = String.format("SELECT username FROM %s WHERE authToken=?", TABLE);
             try (var au = conn.prepareStatement(statement)) {
                 au.setString(1, authToken);
                 try (var rs = au.executeQuery()) {
@@ -69,7 +69,7 @@ public class SQLAuthDAO extends SQLDAO implements AuthDAO{
 
     @Override
     public void deleteAuth(String authToken) throws DataAccessException {
-        var statement = "DELETE FROM %s WHERE authToken=?";
+        var statement = String.format("DELETE FROM %s WHERE authToken=?", TABLE);
         executeUpdate(statement, authToken);
     }
 }
