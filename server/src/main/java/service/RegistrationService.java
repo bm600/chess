@@ -1,24 +1,22 @@
 package service;
 
-import dataAccess.MemoryAuthDAO;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryUserDAO;
+import dataAccess.*;
 import model.AuthData;
 import model.UserData;
 
 public class RegistrationService {
-    private final MemoryUserDAO userDAO;
-    private final MemoryAuthDAO authDAO;
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
-    public RegistrationService(MemoryUserDAO userDAO, MemoryAuthDAO authDAO){
+    public RegistrationService(UserDAO userDAO, AuthDAO authDAO){
         this.authDAO = authDAO;
         this.userDAO = userDAO;
     }
 
-    public UserData getUser(String username){
+    public UserData getUser(String username) throws DataAccessException {
         return userDAO.getUser(username);
     }
-    public void createUser(UserData userData){
+    public void createUser(UserData userData) throws DataAccessException {
         if (userData.getPassword() == null || userData.getEmail() == null || userData.getUsername() == null)
             throw new IllegalArgumentException("Invalid user data");
         userDAO.createUser(userData);

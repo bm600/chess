@@ -1,25 +1,23 @@
 package service;
 
-import dataAccess.MemoryAuthDAO;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryUserDAO;
+import dataAccess.*;
 import model.AuthData;
 import model.UserData;
 
 public class LoginService {
-    private final MemoryUserDAO userDAO;
-    private final MemoryAuthDAO authDAO;
+    private final UserDAO userDAO;
+    private final AuthDAO authDAO;
 
-    public LoginService(MemoryUserDAO userDAO, MemoryAuthDAO authDAO){
+    public LoginService(UserDAO userDAO, AuthDAO authDAO){
         this.userDAO = userDAO;
         this.authDAO = authDAO;
     }
 
-    public UserData getUser(String username){
+    public UserData getUser(String username) throws DataAccessException {
         return userDAO.getUser(username);
     }
 
-    public AuthData getAuth(String authToken){
+    public AuthData getAuth(String authToken) throws DataAccessException {
         return authDAO.getAuth(authToken);
     }
 

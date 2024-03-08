@@ -1,9 +1,6 @@
 package server;
 
-import dataAccess.AuthDAO;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.MemoryGameDAO;
-import dataAccess.MemoryUserDAO;
+import dataAccess.*;
 import server.handlers.*;
 import service.*;
 import spark.*;
@@ -15,10 +12,20 @@ public class Server {
 
         Spark.staticFiles.location("web");
 
-        //TODO change so SQLDAOs are implemented instead of MemDAO
-        MemoryAuthDAO authDAO = new MemoryAuthDAO();
-        MemoryGameDAO gameDAO = new MemoryGameDAO();
-        MemoryUserDAO userDAO = new MemoryUserDAO();
+        AuthDAO authDAO;
+        UserDAO userDAO;
+        GameDAO gameDAO;
+
+        try {
+            DatabaseManager.createDatabase();
+            authDAO = new SQLAuthDAO();
+            userDAO = new SQLUserDAO();
+            gameDAO = new SQLGameDAO();
+        } catch(Exception e) {
+            authDAO = new MemoryAuthDAO();
+            userDAO = new MemoryUserDAO();
+            gameDAO = new MemoryGameDAO();
+        }
 
         ClearService clearService = new ClearService(userDAO, authDAO, gameDAO);
         GameService gameService = new GameService(gameDAO, authDAO, userDAO);

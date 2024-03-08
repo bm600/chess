@@ -1,26 +1,25 @@
 package service;
 
 import chess.ChessGame;
-import dataAccess.MemoryAuthDAO;
-import dataAccess.DataAccessException;
-import dataAccess.MemoryGameDAO;
-import dataAccess.MemoryUserDAO;
+import dataAccess.*;
 import model.GameData;
 import model.UserData;
 
+import java.sql.SQLException;
+
 public class GameService {
-    private final MemoryGameDAO gameDAO;
-    private final MemoryAuthDAO authDAO;
+    private final GameDAO gameDAO;
+    private final AuthDAO authDAO;
 
-    private final MemoryUserDAO userDAO;
+    private final UserDAO userDAO;
 
-    public GameService(MemoryGameDAO gameDAO, MemoryAuthDAO authDAO, MemoryUserDAO userDAO) {
+    public GameService(GameDAO gameDAO, AuthDAO authDAO, UserDAO userDAO) {
         this.gameDAO = gameDAO;
         this.authDAO = authDAO;
         this.userDAO = userDAO;
     }
 
-    public UserData getUserByAuth(String authToken) {
+    public UserData getUserByAuth(String authToken) throws DataAccessException {
         final var auth = authDAO.getAuth(authToken);
         if (auth == null) {
             return null;
@@ -28,7 +27,7 @@ public class GameService {
         return userDAO.getUser(auth.getUsername());
     }
 
-    public GameData getGame(int gameID) {
+    public GameData getGame(int gameID) throws DataAccessException {
         return gameDAO.getGame(gameID);
     }
 
@@ -58,21 +57,21 @@ public class GameService {
         gameDAO.updateGame(newGame);
     }
 
-    public int getNextGameID() {
+    public int getNextGameID() throws SQLException, DataAccessException {
         return gameDAO.getNextGameId();
     }
 
-    public GameData createGame(GameData gameData) {
+    public GameData createGame(GameData gameData) throws DataAccessException {
         if (gameData.getGameID() < 0 || gameData.getGameName() == null)
             throw new IllegalArgumentException("Invalid game data");
         return gameDAO.createGame(gameData);
     }
 
-    public GameData[] listGames(String username) {
+    public GameData[] listGames(String username) throws DataAccessException {
         return gameDAO.listGames();
     }
 
-    public void deleteAllGames() {
+    public void deleteAllGames() throws DataAccessException {
         gameDAO.deleteAllGames();
     }
 }

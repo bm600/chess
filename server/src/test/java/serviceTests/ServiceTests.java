@@ -39,7 +39,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void testGetUser() {
+    public void testGetUser() throws DataAccessException {
         final var username = "username";
         final var email = "email";
         final var password = "password";
@@ -53,7 +53,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void testGetNullUser() {
+    public void testGetNullUser() throws DataAccessException {
         final var username = "username";
         final var user = loginService.getUser(username);
         assertNull(user);
@@ -77,7 +77,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void testGetNull() {
+    public void testGetNull() throws DataAccessException {
         final var authToken = "authToken";
         final var authResult = loginService.getAuth(authToken);
         assertNull(authResult);
@@ -110,7 +110,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void testCreateUser() {
+    public void testCreateUser() throws DataAccessException {
         final var username = "username";
         final var email = "email";
         final var password = "password";
@@ -151,7 +151,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void testGetNullUserByAuthToken() {
+    public void testGetNullUserByAuthToken() throws DataAccessException {
         final var authToken = "authToken";
         final var userResult = gameService.getUserByAuth(authToken);
         assertNull(userResult);
@@ -182,7 +182,7 @@ public class ServiceTests {
     }
 
     @Test
-    void testListGames() {
+    void testListGames() throws DataAccessException {
         final String username = "username";
         final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
         final GameData game2 = new GameData(2, null, null, "gameName2", new ChessGame());
@@ -196,7 +196,7 @@ public class ServiceTests {
     }
 
     @Test
-    void testEmptyGames() {
+    void testEmptyGames() throws DataAccessException {
         final String username = "username";
 
         final var games = gameService.listGames(username);
@@ -205,7 +205,7 @@ public class ServiceTests {
     }
 
     @Test
-    void testDeleteGames() {
+    void testDeleteGames() throws DataAccessException {
         final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
 
         gameService.createGame(game1);
@@ -217,7 +217,7 @@ public class ServiceTests {
     }
 
     @Test
-    void testDeleteAllGamesAlreadyEmpty() {
+    void testDeleteAllGamesAlreadyEmpty() throws DataAccessException {
         gameService.deleteAllGames();
 
         final var games = gameService.listGames(null);
@@ -226,7 +226,7 @@ public class ServiceTests {
     }
 
     @Test
-    void testCreateGame() {
+    void testCreateGame() throws DataAccessException {
         final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
 
         gameService.createGame(game1);
@@ -246,7 +246,7 @@ public class ServiceTests {
     }
 
     @Test
-    void testGetGame() {
+    void testGetGame() throws DataAccessException {
         final GameData game1 = new GameData(1, null, null, "gameName", new ChessGame());
 
         gameService.createGame(game1);
@@ -287,14 +287,14 @@ public class ServiceTests {
     }
 
     @Test
-    public void testNotThrowWhenAuthTokenDoesNotExist() {
+    public void testNotThrowWhenAuthTokenDoesNotExist() throws DataAccessException {
         final var authToken = "authToken";
         logoutService.deleteAuth(authToken);
     }
 
 
     @Test
-    public void testGetNullWhenNoAuthByUsername() {
+    public void testGetNullWhenNoAuthByUsername() throws DataAccessException {
         final var username = "username";
         final var authResult = gameService.getUserByAuth(username);
         assertNull(authResult);
@@ -302,7 +302,7 @@ public class ServiceTests {
 
 
     @Test
-    public void testDeleteAllUsers() {
+    public void testDeleteAllUsers() throws DataAccessException {
         final var username = "username";
         final var email = "email";
         final var password = "password";
@@ -318,7 +318,7 @@ public class ServiceTests {
     }
 
     @Test
-    public void testNotThrowWhenNoUsers() {
+    public void testNotThrowWhenNoUsers() throws DataAccessException {
         clearService.deleteAllUsers();
     }
 
