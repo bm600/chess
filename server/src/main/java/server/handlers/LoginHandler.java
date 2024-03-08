@@ -11,7 +11,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 public class LoginHandler {
 
-    private LoginService loginService;
+    private final LoginService loginService;
 
     public LoginHandler(LoginService loginService){
         this.loginService = loginService;

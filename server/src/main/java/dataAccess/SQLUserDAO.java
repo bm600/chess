@@ -28,7 +28,10 @@ public class SQLUserDAO extends SQLDAO implements UserDAO{
                     """, TABLE)
     };
 
-    //TODO this static block may not work so check up on it fr fr
+    //public SQLUserDAO() throws DataAccessException {
+    //    configureDatabase(createStatements);
+    //}
+
     static {
         try {
             configureDatabase(createStatements);

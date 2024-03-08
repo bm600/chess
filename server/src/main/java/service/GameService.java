@@ -68,7 +68,7 @@ public class GameService {
     }
 
     public GameData[] listGames(String username) throws DataAccessException {
-        return gameDAO.listGames();
+        return gameDAO.listGames(username);
     }
 
     public void deleteAllGames() throws DataAccessException {

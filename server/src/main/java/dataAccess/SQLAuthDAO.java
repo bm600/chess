@@ -24,9 +24,9 @@ public class SQLAuthDAO extends SQLDAO implements AuthDAO{
                     """, TABLE)
     };
 
-    public SQLAuthDAO() throws DataAccessException {
-        configureDatabase(createStatements);
-    }
+    //public SQLAuthDAO() throws DataAccessException {
+    //    configureDatabase(createStatements);
+    //}
 
     static {
         try {
@@ -43,8 +43,7 @@ public class SQLAuthDAO extends SQLDAO implements AuthDAO{
     }
 
     @Override
-    public AuthData createAuth(String username) throws DataAccessException {
-        String authToken = AuthTokenGenerator.makeToken();
+    public AuthData createAuth(String username, String authToken) throws DataAccessException {
         AuthData newAuth = new AuthData(authToken, username);
         var statement = String.format("INSERT INTO %s (authToken, username) VALUES (?, ?)", TABLE);
         executeUpdate(statement, newAuth.getAuthToken(), newAuth.getUsername());

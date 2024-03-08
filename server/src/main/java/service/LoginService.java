@@ -3,6 +3,7 @@ package service;
 import dataAccess.*;
 import model.AuthData;
 import model.UserData;
+import util.AuthTokenGenerator;
 
 public class LoginService {
     private final UserDAO userDAO;
@@ -25,6 +26,7 @@ public class LoginService {
         if(userDAO.getUser(username) == null){
             throw new DataAccessException("No User Found");
         }
-        return authDAO.createAuth(username);
+        String authToken = AuthTokenGenerator.makeToken();
+        return authDAO.createAuth(username, authToken);
     }
 }

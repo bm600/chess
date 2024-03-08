@@ -26,8 +26,16 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
                     """, TABLE)
     };
 
-    public SQLGameDAO() throws DataAccessException {
-        configureDatabase(createStatements);
+    //public SQLGameDAO() throws DataAccessException {
+    //    configureDatabase(createStatements);
+    //}
+
+    static {
+        try {
+            configureDatabase(createStatements);
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
     @Override
     public void deleteAllGames() throws DataAccessException {
@@ -78,7 +86,7 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
     }
 
     @Override
-    public GameData[] listGames() throws DataAccessException{
+    public GameData[] listGames(String username) throws DataAccessException{
         var result = new ArrayList<GameData>();
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "SELECT * FROM game";

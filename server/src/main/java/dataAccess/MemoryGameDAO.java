@@ -30,7 +30,7 @@ public class MemoryGameDAO implements GameDAO {
         return game;
     }
 
-    public GameData[] listGames() {
+    public GameData[] listGames(String username) {
         return gamesList.values().toArray(new GameData[0]);
     }
 
