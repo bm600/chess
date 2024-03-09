@@ -13,7 +13,7 @@ import spark.Request;
 import spark.Response;
 
 public class JoinGameHandler {
-    private GameService gameService;
+    private final GameService gameService;
 
     public static record RequestBody(String playerColor, int gameID) {
     }
