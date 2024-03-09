@@ -70,8 +70,6 @@ public class SQLDAOTests {
 
     @Test
     public void testUserAuthCreationInvalid() {
-        final var user = "username";
-        final var token = "authtoken";
 
         Assertions.assertThrows(DataAccessException.class, () -> {
             authDAO.createAuth(null, null);
