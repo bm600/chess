@@ -79,6 +79,9 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
 
     @Override
     public GameData createGame(GameData game) throws DataAccessException {
+        if (!isValidGame(game)){
+            throw new DataAccessException("Invalid game data");
+        }
         var statement = String.format("INSERT INTO %s (gameId, wUsername, bUsername, gameName, game) VALUES (?, ?, ?, ?, ?)", TABLE);
         var newGame = new Gson().toJson(game.getGame());
         executeUpdate(statement, game.getGameID(), game.getWhiteUsername(), game.getBlackUsername(), game.getGameName(), newGame);
