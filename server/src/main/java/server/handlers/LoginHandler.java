@@ -1,14 +1,10 @@
 package server.handlers;
 
-import dataAccess.DataAccessException;
-import model.AuthData;
-import model.UserData;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import service.LoginService;
 import spark.Request;
 import spark.Response;
 
-import java.util.HashMap;
 import java.util.Map;
 import com.google.gson.Gson;
 public class LoginHandler {
@@ -46,14 +42,6 @@ public class LoginHandler {
         } catch(Exception e) {
             res.status(400);
             return new Gson().toJson(Map.of("message", "Error: Bad Request"));
-        }
-    }
-
-    private RequestData parseRequestData(Request request) {
-        try {
-            return new Gson().fromJson(request.body(), RequestData.class);
-        } catch (Exception e) {
-            return null;
         }
     }
 

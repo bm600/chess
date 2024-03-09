@@ -1,13 +1,8 @@
 package dataAccess;
 
 import model.AuthData;
-import util.AuthTokenGenerator;
 
 import java.sql.*;
-import dataAccess.DatabaseManager.*;
-
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 public class SQLAuthDAO extends SQLDAO implements AuthDAO{
 
@@ -23,10 +18,6 @@ public class SQLAuthDAO extends SQLDAO implements AuthDAO{
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """, TABLE)
     };
-
-    //public SQLAuthDAO() throws DataAccessException {
-    //    configureDatabase(createStatements);
-    //}
 
     static {
         try {

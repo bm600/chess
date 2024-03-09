@@ -1,8 +1,6 @@
 package dataAccessTests;
 
 import chess.ChessGame;
-import chess.InvalidMoveException;
-import com.mysql.cj.log.Log;
 import dataAccess.*;
 import model.AuthData;
 import model.GameData;
@@ -12,19 +10,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import service.*;
 
-import javax.xml.crypto.Data;
 
 import java.sql.SQLException;
 
 import static dataAccess.DatabaseManager.createDatabase;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class DAOtests {
+public class SQLDAOTests {
     private static AuthDAO authDAO;
     private static UserDAO userDAO;
     private static GameDAO gameDAO;
-    private static ClearService clearService;
 
     @BeforeEach
     public void beforeEach() throws DataAccessException {
@@ -37,11 +32,7 @@ public class DAOtests {
         authDAO = new SQLAuthDAO();
         userDAO = new SQLUserDAO();
         gameDAO = new SQLGameDAO();
-        clearService = new ClearService(userDAO, authDAO, gameDAO);
-        GameService gameService = new GameService(gameDAO, authDAO, userDAO);
-        LoginService loginService = new LoginService(userDAO, authDAO);
-        LogoutService logoutService = new LogoutService(authDAO);
-        RegistrationService registrationService = new RegistrationService(userDAO, authDAO);
+        ClearService clearService = new ClearService(userDAO, authDAO, gameDAO);
 
         clearService.clearAll();
     }
@@ -78,7 +69,7 @@ public class DAOtests {
     }
 
     @Test
-    public void testUserAuthCreationInvalid() throws DataAccessException {
+    public void testUserAuthCreationInvalid() {
         final var user = "username";
         final var token = "authtoken";
 
@@ -139,7 +130,7 @@ public class DAOtests {
     }
 
     @Test
-    public void testUserCreationInvalid() throws DataAccessException {
+    public void testUserCreationInvalid() {
         final var user = "username";
         final var mail = "email";
         final var pass = "password";
@@ -249,7 +240,7 @@ public class DAOtests {
     }
 
     @Test
-    public void testGameCreationInvalid() throws DataAccessException {
+    public void testGameCreationInvalid() {
         final var gameId = 1;
         final var whiteUser = "username";
         final var blackUser = "username2";
@@ -264,7 +255,7 @@ public class DAOtests {
     }
 
     @Test
-    public void testGameUpdate() throws DataAccessException, InvalidMoveException {
+    public void testGameUpdate() throws DataAccessException {
         final var gameId = 1;
         final var whiteUser = "username";
         final var blackUser = "username2";
@@ -325,7 +316,7 @@ public class DAOtests {
     public void testGetNextGameIdPositive() {
         try {
             int nextGameId = gameDAO.getNextGameId();
-            assertTrue(nextGameId > 0);
+            Assertions.assertTrue(nextGameId > 0);
         } catch (SQLException | DataAccessException e) {
             fail("Exception should not be thrown for positive test");
         }

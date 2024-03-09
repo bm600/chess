@@ -1,15 +1,10 @@
 package dataAccess;
 
-import model.AuthData;
+
 import model.UserData;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import javax.xml.crypto.Data;
 import java.sql.SQLException;
-import java.util.HashMap;
 
-import static java.sql.Statement.RETURN_GENERATED_KEYS;
-import static java.sql.Types.NULL;
 
 public class SQLUserDAO extends SQLDAO implements UserDAO{
 
@@ -28,10 +23,6 @@ public class SQLUserDAO extends SQLDAO implements UserDAO{
                     """, TABLE)
     };
 
-    //public SQLUserDAO() throws DataAccessException {
-    //    configureDatabase(createStatements);
-    //}
-
     static {
         try {
             configureDatabase(createStatements);
@@ -47,8 +38,8 @@ public class SQLUserDAO extends SQLDAO implements UserDAO{
 
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var us_statement = String.format("SELECT password, email FROM %s WHERE username=?", TABLE);
-            try (var us = conn.prepareStatement(us_statement)) {
+            var usStatement = String.format("SELECT password, email FROM %s WHERE username=?", TABLE);
+            try (var us = conn.prepareStatement(usStatement)) {
                 us.setString(1, username);
                 try (var rs = us.executeQuery()) {
                     if (rs.next()) {
