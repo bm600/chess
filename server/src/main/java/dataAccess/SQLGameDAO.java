@@ -15,11 +15,11 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
     static private final String[] createStatements = {
             String.format("""
                     CREATE TABLE IF NOT EXISTS %s (
-                        `gameId` varchar(256) NOT NULL,
-                        `wUsername` varchar(256) NOT NULL,
-                        `bUsername` varchar(256) NOT NULL,
-                        `gameName` varchar(256) NOT NULL,
-                        `game` varchar(256) NOT NULL,
+                        `gameId` varchar(256),
+                        `wUsername` varchar(256),
+                        `bUsername` varchar(256),
+                        `gameName` varchar(256),
+                        `game` varchar(256),
                         PRIMARY KEY (`gameId`),
                         INDEX(gameName)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
@@ -74,7 +74,7 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
         }
         var statement = String.format("UPDATE %s SET wUsername=?, bUsername=?, gameName=?, game=? WHERE gameId=?", TABLE);
         var game = new Gson().toJson(newGame.getGame());
-        executeUpdate(statement, newGame.getWhiteUsername(), newGame.getBlackUsername(), newGame.getGameName(), game);
+        executeUpdate(statement, newGame.getWhiteUsername(), newGame.getBlackUsername(), newGame.getGameName(), game, newGame.getGameID());
     }
 
     @Override

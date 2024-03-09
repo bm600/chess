@@ -17,8 +17,6 @@ public class LoginHandler {
         this.loginService = loginService;
     }
 
-    private static record RequestBody(String username, String password) {
-    }
     public Object handleLogin(Request request, Response response) {
         Map<String, Object> responseData = new HashMap<>();
 

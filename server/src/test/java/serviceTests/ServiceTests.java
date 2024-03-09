@@ -15,10 +15,10 @@ import service.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ServiceTests {
-    MemoryAuthDAO authDAO;
-    MemoryUserDAO userDAO;
+    AuthDAO authDAO;
+    UserDAO userDAO;
 
-    MemoryGameDAO gameDAO;
+    GameDAO gameDAO;
     LoginService loginService;
     LogoutService logoutService;
     RegistrationService registrationService;
@@ -27,15 +27,16 @@ public class ServiceTests {
     ClearService clearService;
 
     @BeforeEach
-    public void beforeEach() {
-        authDAO = new MemoryAuthDAO();
-        userDAO = new MemoryUserDAO();
-        gameDAO = new MemoryGameDAO();
+    public void beforeEach() throws DataAccessException {
+        authDAO = new SQLAuthDAO();
+        userDAO = new SQLUserDAO();
+        gameDAO = new SQLGameDAO();
         loginService = new LoginService(userDAO, authDAO);
         logoutService = new LogoutService(authDAO);
         registrationService = new RegistrationService(userDAO, authDAO);
         gameService = new GameService(gameDAO, authDAO, userDAO);
         clearService = new ClearService(userDAO, authDAO, gameDAO);
+        clearService.clearAll();
     }
 
     @Test
@@ -82,6 +83,8 @@ public class ServiceTests {
         final var authResult = loginService.getAuth(authToken);
         assertNull(authResult);
     }
+
+
 
     @Test
     public void testClearAll() throws DataAccessException {

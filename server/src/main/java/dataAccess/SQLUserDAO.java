@@ -19,9 +19,9 @@ public class SQLUserDAO extends SQLDAO implements UserDAO{
             String.format("""
                     CREATE TABLE IF NOT EXISTS %s (
                         `id` int NOT NULL AUTO_INCREMENT,
-                        `username` varchar(256) NOT NULL,
-                        `password` varchar(256) NOT NULL,
-                        `email` varchar(256) NOT NULL,
+                        `username` varchar(256),
+                        `password` varchar(256),
+                        `email` varchar(256),
                         PRIMARY KEY (`id`),
                         INDEX(username)
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
