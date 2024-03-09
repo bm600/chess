@@ -1,5 +1,6 @@
 package server.handlers;
 
+import dataAccess.DataAccessException;
 import model.AuthData;
 import model.UserData;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,29 +20,20 @@ public class LoginHandler {
     }
 
     public Object handleLogin(Request req, Response res) {
-        String username;
-        String password;
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-
         try {
             final var requestBody = new Gson().fromJson(req.body(), RequestData.class);
-            username = requestBody.username();
-            password = requestBody.password();
+            String username = requestBody.username();
+            String password = requestBody.password();
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
             if (username == null || password == null) {
                 throw new Exception();
             }
-        } catch(Exception e) {
-            res.status(400);
-            return new Gson().toJson(Map.of("message", "Error: bad request"));
-        }
 
-        try {
             final var user = loginService.getUser(username);
-
             if (user == null || !encoder.matches(password, user.getPassword())) {
                 res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+                return new Gson().toJson(Map.of("message", "Error: Unauthorized"));
             }
 
             final var newAuth = loginService.createAuth(username);
@@ -52,8 +44,8 @@ public class LoginHandler {
                     "authToken", newAuth.getAuthToken()
             ));
         } catch(Exception e) {
-            res.status(500);
-            return new Gson().toJson(Map.of("message", "Error: Internal server error"));
+            res.status(400);
+            return new Gson().toJson(Map.of("message", "Error: Bad Request"));
         }
     }
 

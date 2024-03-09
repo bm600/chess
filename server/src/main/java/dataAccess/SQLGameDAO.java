@@ -2,7 +2,6 @@ package dataAccess;
 
 import chess.ChessGame;
 import com.google.gson.Gson;
-import model.AuthData;
 import model.GameData;
 
 import java.sql.SQLException;
@@ -25,10 +24,6 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
                     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
                     """, TABLE)
     };
-
-    //public SQLGameDAO() throws DataAccessException {
-    //    configureDatabase(createStatements);
-    //}
 
     static {
         try {
@@ -69,7 +64,7 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
 
     @Override
     public void updateGame(GameData newGame) throws DataAccessException {
-        if(!isValidGame(newGame)){
+        if(isValidGame(newGame)){
             throw new DataAccessException("Invalid game data");
         }
         var statement = String.format("UPDATE %s SET wUsername=?, bUsername=?, gameName=?, game=? WHERE gameId=?", TABLE);
@@ -79,7 +74,7 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
 
     @Override
     public GameData createGame(GameData game) throws DataAccessException {
-        if (!isValidGame(game)){
+        if (isValidGame(game)){
             throw new DataAccessException("Invalid game data");
         }
         var statement = String.format("INSERT INTO %s (gameId, wUsername, bUsername, gameName, game) VALUES (?, ?, ?, ?, ?)", TABLE);
@@ -131,6 +126,6 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
     }
 
     private boolean isValidGame(GameData game){
-        return game.getGameID() >= 0 & game.getGameName() != null & game.getGame() != null;
+        return !(game.getGameID() >= 0 & game.getGameName() != null & game.getGame() != null);
     }
 }

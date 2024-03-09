@@ -15,37 +15,36 @@ import spark.Response;
 public class CreateGameHandler {
     private final GameService gameService;
 
-    public static record RequestBody(String gameName) {}
+    public record RequestBody(String gameName) {}
 
     public CreateGameHandler(GameService gameService) {
         this.gameService = gameService;
     }
 
     public Object handleCreateGame(Request req, Response res) {
-        String gameName;
-
-        try {
-            final var requestBody = new Gson().fromJson(req.body(), RequestBody.class);
-            gameName = requestBody.gameName();
-            if (gameName == null) {
-                throw new Exception();
-            }
-        } catch(Exception e) {
-            res.status(400);
-            return new Gson().toJson(Map.of("message", "Error: bad request"));
-        }
-
         try {
             final var authToken = req.headers("Authorization");
             if (authToken == null) {
                 res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+                return new Gson().toJson(Map.of("message", "Error: Unauthorized"));
             }
 
             final var user = gameService.getUserByAuth(authToken);
             if (user == null) {
                 res.status(401);
-                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
+                return new Gson().toJson(Map.of("message", "Error: Unauthorized"));
+            }
+
+            String gameName;
+            try {
+                final var requestBody = new Gson().fromJson(req.body(), RequestBody.class);
+                gameName = requestBody.gameName();
+                if (gameName == null) {
+                    throw new Exception();
+                }
+            } catch(Exception e) {
+                res.status(400);
+                return new Gson().toJson(Map.of("message", "Error: Bad Request"));
             }
 
             final int gameId = gameService.getNextGameID();
@@ -62,7 +61,7 @@ public class CreateGameHandler {
             ));
         } catch(Exception e) {
             res.status(500);
-            return "Error: Internal server error";
+            return "Error: Internal Server Issue";
         }
     }
 }

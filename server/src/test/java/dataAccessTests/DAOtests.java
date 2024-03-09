@@ -14,7 +14,11 @@ import service.*;
 
 import javax.xml.crypto.Data;
 
+import java.sql.SQLException;
+
 import static dataAccess.DatabaseManager.createDatabase;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 public class DAOtests {
     private static AuthDAO authDAO;
@@ -43,38 +47,40 @@ public class DAOtests {
     }
 
     @Test
-    public void testGetAuth() throws DataAccessException {
-        final var username = "username";
-        final var authToken = "authtoken";
-        final var authData = new AuthData(authToken, username);
+    public void testUserAuthentication() throws DataAccessException {
+        final var user = "username";
+        final var token = "authtoken";
+        final var authInfo = new AuthData(token, user);
 
-        authDAO.createAuth(username, authToken);
-        final var result = authDAO.getAuth(authToken);Assertions.assertEquals(result, authData);
+        authDAO.createAuth(user, token);
+        final var result = authDAO.getAuth(token);
+
+        Assertions.assertEquals(result, authInfo);
     }
 
     @Test
-    public void testGetAuthNotFound() throws DataAccessException {
-        final var authToken = "authtoken";
-        final var result = authDAO.getAuth(authToken);
+    public void testUserAuthenticationNotFound() throws DataAccessException {
+        final var token = "authtoken";
+        final var result = authDAO.getAuth(token);
         Assertions.assertNull(result);
     }
 
     @Test
-    public void testCreateAuth() throws DataAccessException {
-        final var username = "username";
-        final var authToken = "authtoken";
-        final var authData = new AuthData(authToken, username);
+    public void testUserAuthCreation() throws DataAccessException {
+        final var user = "username";
+        final var token = "authtoken";
+        final var authInfo = new AuthData(token, user);
 
-        authDAO.createAuth(username, authToken);
-        final var result = authDAO.getAuth(authToken);
+        authDAO.createAuth(user, token);
+        final var result = authDAO.getAuth(token);
 
-        Assertions.assertEquals(result, authData);
+        Assertions.assertEquals(result, authInfo);
     }
 
     @Test
-    public void testCreateAuthInvalid() throws DataAccessException {
-        final var username = "username";
-        final var authToken = "authtoken";
+    public void testUserAuthCreationInvalid() throws DataAccessException {
+        final var user = "username";
+        final var token = "authtoken";
 
         Assertions.assertThrows(DataAccessException.class, () -> {
             authDAO.createAuth(null, null);
@@ -82,65 +88,65 @@ public class DAOtests {
     }
 
     @Test
-    public void testDeleteAuth() throws DataAccessException {
-        final var username = "username";
-        final var authToken = "authtoken";
+    public void testUserAuthDeletion() throws DataAccessException {
+        final var user = "username";
+        final var token = "authtoken";
 
-        authDAO.createAuth(username, authToken);
-        authDAO.deleteAuth(authToken);
+        authDAO.createAuth(user, token);
+        authDAO.deleteAuth(token);
 
-        final var result = authDAO.getAuth(authToken);
+        final var result = authDAO.getAuth(token);
         Assertions.assertNull(result);
     }
 
     @Test
-    public void testDeleteNonExistentAuth() throws DataAccessException {
-        final var authToken = "authtoken";
+    public void testUserAuthDeletionNotFound() throws DataAccessException {
+        final var token = "authtoken";
 
-        authDAO.deleteAuth(authToken);
+        authDAO.deleteAuth(token);
 
-        final var result = authDAO.getAuth(authToken);
+        final var result = authDAO.getAuth(token);
         Assertions.assertNull(result);
     }
 
     @Test
-    public void testDeleteAllAuth() throws DataAccessException {
-        final var username = "username";
-        final var username2 = "username2";
-        final var authToken = "authtoken";
-        final var authToken2 = "authtoken2";
+    public void testUserAuthDeletionAll() throws DataAccessException {
+        final var user = "username";
+        final var user2 = "username2";
+        final var token = "authtoken";
+        final var token2 = "authtoken2";
 
-        authDAO.createAuth(username, authToken);
-        authDAO.createAuth(username2, authToken2);
+        authDAO.createAuth(user, token);
+        authDAO.createAuth(user2, token2);
         authDAO.deleteAllAuth();
 
-        final var result = authDAO.getAuth(authToken);
-        final var result2 = authDAO.getAuth(authToken2);
+        final var result = authDAO.getAuth(token);
+        final var result2 = authDAO.getAuth(token2);
 
         Assertions.assertNull(result);
         Assertions.assertNull(result2);
     }
 
     @Test
-    public void testCreateUser() throws DataAccessException {
-        var username = "username";
-        var password = "password1";
-        var email = "email@email.com";
-        var newUser = new UserData(username, password, email);
+    public void testUserCreation() throws DataAccessException {
+        var user = "username";
+        var pass = "password1";
+        var mail = "email@email.com";
+        var newUser = new UserData(user, pass, mail);
         var insertedUser = userDAO.createUser(newUser);
 
         Assertions.assertEquals(newUser, insertedUser);
     }
 
     @Test
-    public void testCreateInvalidUser() throws DataAccessException {
-        final var username = "username";
-        final var email = "email";
-        final var password = "password";
+    public void testUserCreationInvalid() throws DataAccessException {
+        final var user = "username";
+        final var mail = "email";
+        final var pass = "password";
 
-        final var user1 = new UserData(null, email, password);
-        final var user2 = new UserData(username, null, password);
-        final var user3 = new UserData(username, email, null);
+        final var user1 = new UserData(null, mail, pass);
+        final var user2 = new UserData(user, null, pass);
+        final var user3 = new UserData(user, mail, null);
 
         Assertions.assertThrows(DataAccessException.class, () -> userDAO.createUser(user1));
         Assertions.assertThrows(DataAccessException.class, () -> userDAO.createUser(user2));
@@ -148,194 +154,166 @@ public class DAOtests {
     }
 
     @Test
-    public void testGetUser() throws DataAccessException {
-        final var username = "username90";
-        final var email = "email90";
-        final var password = "password90";
+    public void testUserRetrieval() throws DataAccessException {
+        final var user = "username90";
+        final var mail = "email90";
+        final var pass = "password90";
 
-        final var user = new UserData(username, password, email);
-        userDAO.createUser(user);
-        final var result = userDAO.getUser(username);
-        Assertions.assertEquals(result, user);
+        final var userInfo = new UserData(user, pass, mail);
+        userDAO.createUser(userInfo);
+        final var result = userDAO.getUser(user);
+        Assertions.assertEquals(result, userInfo);
     }
 
-
     @Test
-    public void testDeleteAllUsers() throws DataAccessException {
-        final var username = "username";
-        final var username2 = "username2";
-        final var password = "password";
-        final var password2 = "password2";
-        final var email = "email1@email.com";
-        final var email2 = "email2@email.com";
+    public void testUserDeletionAll() throws DataAccessException {
+        final var user = "username";
+        final var user2 = "username2";
+        final var pass = "password";
+        final var pass2 = "password2";
+        final var mail = "email1@email.com";
+        final var mail2 = "email2@email.com";
 
-        userDAO.createUser(new UserData(username, password, email));
-        userDAO.createUser(new UserData(username2, password2, email2));
+        userDAO.createUser(new UserData(user, pass, mail));
+        userDAO.createUser(new UserData(user2, pass2, mail2));
         userDAO.deleteAllUsers();
 
-        final var result = userDAO.getUser(username);
-        final var result2 = userDAO.getUser(username2);
+        final var result = userDAO.getUser(user);
+        final var result2 = userDAO.getUser(user2);
 
         Assertions.assertNull(result);
         Assertions.assertNull(result2);
     }
 
-    //GameDAO tests
+//GameDAO tests
 
     @Test
-    public void getGame() throws DataAccessException {
+    public void testGameRetrieval() throws DataAccessException {
         final var gameId = 1;
-        final var whiteUsername = "username";
-        final var blackUsername = "username2";
+        final var whiteUser = "username";
+        final var blackUser = "username2";
         final var gameName = "gameName";
         final var game = new ChessGame();
-        final var gameData = new GameData(gameId, whiteUsername, blackUsername, gameName, game);
-        gameDAO.createGame(gameData);
+        final var gameInfo = new GameData(gameId, whiteUser, blackUser, gameName, game);
+        gameDAO.createGame(gameInfo);
         final var result = gameDAO.getGame(gameId);
-        Assertions.assertEquals(result, gameData);
+        Assertions.assertEquals(result, gameInfo);
     }
 
     @Test
-    public void getGameNotFound() throws DataAccessException {
+    public void testGameNotFound() throws DataAccessException {
         final var gameId = 1;
         final var result = gameDAO.getGame(gameId);
         Assertions.assertNull(result);
     }
 
-//    @Test
-//    public void testListGames() throws DataAccessException {
-//        final var game1Id = 1;
-//        final var game2Id = 2;
-//        final var whiteUsername1 = "username1";
-//        final var whiteUsername2 = "username2";
-//        final var blackUsername1 = "username3";
-//        final var blackUsername2 = "username4";
-//        final var gameName1 = "gameName1";
-//        final var gameName2 = "gameName2";
-//        final var game1 = new ChessGame();
-//        final var game2 = new ChessGame();
-//        final var gameData1 = new GameData(game1Id, whiteUsername1, blackUsername1, gameName1, game1);
-//        final var gameData2 = new GameData(game2Id, whiteUsername2, blackUsername2, gameName2, game2);
-//        gameDAO.createGame(gameData1);
-//        gameDAO.createGame(gameData2);
-//        final var result = gameDAO.listGames(whiteUsername1);
-//        Assertions.assertNotNull(result);
-//        Assertions.assertEquals(result.size(), 2);
-//        Assertions.assertTrue(result.contains(gameData1));
-//        Assertions.assertTrue(result.contains(gameData2));
-//    }
-//
-//    @Test
-//    public void testListGamesNotFound() throws DataAccessException {
-//        final var username = "username";
-//        final var result = gameDAO.listGames(username);
-//        Assertions.assertNotNull(result);
-//        Assertions.assertTrue(result instanceof Collection);
-//        Assertions.assertEquals(result.size(), 0);
-//    }
+    @Test
+    public void testListGamesEmpty() {
+        try {
+            GameData[] games = gameDAO.listGames("username");
+
+            Assertions.assertNotNull(games);
+            Assertions.assertTrue(games.length == 0);
+
+        } catch (DataAccessException e) {
+            fail("Exception should not be thrown for positive test");
+        }
+    }
 
     @Test
-    public void testCreateGame() throws DataAccessException {
+    public void testListGamesNotEmpty() {
+        try {
+            var game = new ChessGame();
+            gameDAO.createGame(new GameData(1, "user23", "buser34", "epicGame", game));
+            GameData[] games = gameDAO.listGames("username");
+
+            Assertions.assertNotNull(games);
+            Assertions.assertTrue(games.length > 0);
+
+        } catch (DataAccessException e) {
+            fail("Exception should not be thrown for positive test");
+        }
+    }
+
+    @Test
+    public void testGameCreation() throws DataAccessException {
         final var gameId = 1;
-        final var whiteUsername = "username";
-        final var blackUsername = "username2";
+        final var whiteUser = "username";
+        final var blackUser = "username2";
         final var gameName = "gameName";
         final var game = new ChessGame();
-        final var gameData = new GameData(gameId, whiteUsername, blackUsername, gameName, game);
-        gameDAO.createGame(gameData);
+        final var gameInfo = new GameData(gameId, whiteUser, blackUser, gameName, game);
+        gameDAO.createGame(gameInfo);
         final var result = gameDAO.getGame(gameId);
-        Assertions.assertEquals(result, gameData);
+        Assertions.assertEquals(result, gameInfo);
     }
 
     @Test
-    public void testCreateInvalidGame() throws DataAccessException {
+    public void testGameCreationInvalid() throws DataAccessException {
         final var gameId = 1;
-        final var whiteUsername = "username";
-        final var blackUsername = "username2";
+        final var whiteUser = "username";
+        final var blackUser = "username2";
         final var gameName = "gameName";
         final var game = new ChessGame();
-        final var gameData1 = new GameData(-1, whiteUsername, blackUsername, gameName, game);
-        final var gameData2 = new GameData(gameId, whiteUsername, blackUsername, null, game);
-        final var gameData3 = new GameData(gameId, whiteUsername, blackUsername, gameName, null);
-        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.createGame(gameData1));
-        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.createGame(gameData2));
-        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.createGame(gameData3));
+        final var gameInfo1 = new GameData(-1, whiteUser, blackUser, gameName, game);
+        final var gameInfo2 = new GameData(gameId, whiteUser, blackUser, null, game);
+        final var gameInfo3 = new GameData(gameId, whiteUser, blackUser, gameName, null);
+        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.createGame(gameInfo1));
+        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.createGame(gameInfo2));
+        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.createGame(gameInfo3));
     }
 
     @Test
-    public void testUpdateGame() throws DataAccessException, InvalidMoveException {
+    public void testGameUpdate() throws DataAccessException, InvalidMoveException {
         final var gameId = 1;
-        final var whiteUsername = "username";
-        final var blackUsername = "username2";
+        final var whiteUser = "username";
+        final var blackUser = "username2";
         final var gameName = "gameName";
         final var game = new ChessGame();
-        final var gameData = new GameData(gameId, whiteUsername, blackUsername, gameName, game);
-        gameDAO.createGame(gameData);
+        final var gameInfo = new GameData(gameId, whiteUser, blackUser, gameName, game);
+        gameDAO.createGame(gameInfo);
         final var newGame = new ChessGame();
         newGame.setTeamTurn(ChessGame.TeamColor.BLACK);
-        final var newGameData = new GameData(gameId, whiteUsername, blackUsername, gameName, newGame);
-        gameDAO.updateGame(newGameData);
+        final var newGameInfo = new GameData(gameId, whiteUser, blackUser, gameName, newGame);
+        gameDAO.updateGame(newGameInfo);
         final var result = gameDAO.getGame(gameId);
-        Assertions.assertEquals(result, newGameData);
+        Assertions.assertEquals(result, newGameInfo);
     }
 
     @Test
-    public void testInvalidUpdateGame() throws DataAccessException {
+    public void testInvalidGameUpdate() throws DataAccessException {
         final var gameId = 1;
-        final var whiteUsername = "username";
-        final var blackUsername = "username2";
+        final var whiteUser = "username";
+        final var blackUser = "username2";
         final var gameName = "gameName";
         final var game = new ChessGame();
-        final var gameData = new GameData(gameId, whiteUsername, blackUsername, gameName, game);
-        gameDAO.createGame(gameData);
+        final var gameInfo = new GameData(gameId, whiteUser, blackUser, gameName, game);
+        gameDAO.createGame(gameInfo);
         final var newGame = new ChessGame();
-        final var newGameData = new GameData(-1, whiteUsername, blackUsername, gameName, newGame);
-        final var newGameData2 = new GameData(gameId, whiteUsername, blackUsername, null, newGame);
-        final var newGameData3 = new GameData(gameId, whiteUsername, blackUsername, gameName, null);
-        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.updateGame(newGameData));
-        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.updateGame(newGameData2));
-        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.updateGame(newGameData3));
+        final var newGameInfo = new GameData(-1, whiteUser, blackUser, gameName, newGame);
+        final var newGameInfo2 = new GameData(gameId, whiteUser, blackUser, null, newGame);
+        final var newGameInfo3 = new GameData(gameId, whiteUser, blackUser, gameName, null);
+        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.updateGame(newGameInfo));
+        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.updateGame(newGameInfo2));
+        Assertions.assertThrows(DataAccessException.class, () -> gameDAO.updateGame(newGameInfo3));
     }
-
-//    @Test
-//    public void testDeleteGame() throws DataAccessException {
-//        final var gameId = 1;
-//        final var whiteUsername = "username";
-//        final var blackUsername = "username2";
-//        final var gameName = "gameName";
-//        final var game = new ChessGame();
-//        final var gameData = new GameData(gameId, whiteUsername, blackUsername, gameName, game);
-//        gameDAO.createGame(gameData);
-//        gameDAO.deleteGame(gameId);
-//        final var result = gameDAO.getGame(gameId);
-//        Assertions.assertEquals(result, null);
-//    }
-//
-//    @Test
-//    public void testDeleteNonExistentGame() throws DataAccessException {
-//        final var gameId = 1;
-//        gameDAO.deleteGame(gameId);
-//        gameDAO.deleteGame(gameId);
-//        final var result = gameDAO.getGame(gameId);
-//        Assertions.assertEquals(result, null);
-//    }
 
     @Test
     public void testDeleteAllGames() throws DataAccessException {
         final var gameId1 = 1;
         final var gameId2 = 2;
-        final var whiteUsername = "username";
-        final var blackUsername = "username2";
-        final var whiteUsername2 = "username3";
-        final var blackUsername2 = "username4";
+        final var whiteUser = "username";
+        final var blackUser = "username2";
+        final var whiteUser2 = "username3";
+        final var blackUser2 = "username4";
         final var gameName = "gameName";
         final var gameName2 = "gameName2";
         final var game = new ChessGame();
         final var game2 = new ChessGame();
-        final var gameData1 = new GameData(gameId1, whiteUsername, blackUsername, gameName, game);
-        final var gameData2 = new GameData(gameId2, whiteUsername2, blackUsername2, gameName2, game2);
-        gameDAO.createGame(gameData1);
-        gameDAO.createGame(gameData2);
+        final var gameInfo1 = new GameData(gameId1, whiteUser, blackUser, gameName, game);
+        final var gameInfo2 = new GameData(gameId2, whiteUser2, blackUser2, gameName2, game2);
+        gameDAO.createGame(gameInfo1);
+        gameDAO.createGame(gameInfo2);
         gameDAO.deleteAllGames();
         final var result1 = gameDAO.getGame(gameId1);
         final var result2 = gameDAO.getGame(gameId2);
@@ -343,24 +321,14 @@ public class DAOtests {
         Assertions.assertNull(result2);
     }
 
-//    @Test
-//    public void getMaxGameId() throws DataAccessException {
-//        final var gameId1 = 10;
-//        final var gameId2 = 200;
-//        final var whiteUsername = "username";
-//        final var blackUsername = "username2";
-//        final var whiteUsername2 = "username3";
-//        final var blackUsername2 = "username4";
-//        final var gameName = "gameName";
-//        final var gameName2 = "gameName2";
-//        final var game = new ChessGame();
-//        final var game2 = new ChessGame();
-//        final var gameData1 = new GameData(gameId1, whiteUsername, blackUsername, gameName, game);
-//        final var gameData2 = new GameData(gameId2, whiteUsername2, blackUsername2, gameName2, game2);
-//        gameDAO.createGame(gameData1);
-//        gameDAO.createGame(gameData2);
-//        final var result = gameDAO.getMaxGameId();
-//        Assertions.assertEquals(result, gameId2);
-//    }
+    @Test
+    public void testGetNextGameIdPositive() {
+        try {
+            int nextGameId = gameDAO.getNextGameId();
+            assertTrue(nextGameId > 0);
+        } catch (SQLException | DataAccessException e) {
+            fail("Exception should not be thrown for positive test");
+        }
+    }
 
 }
