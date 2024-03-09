@@ -13,7 +13,7 @@ import spark.Request;
 import spark.Response;
 
 public class CreateGameHandler {
-    private GameService gameService;
+    private final GameService gameService;
 
     public static record RequestBody(String gameName) {}
 
@@ -22,48 +22,47 @@ public class CreateGameHandler {
     }
 
     public Object handleCreateGame(Request req, Response res) {
-        Map<String, Object> responseData = new HashMap<>();
+        String gameName;
 
         try {
-            String gameName;
-
-            final RequestBody requestBody = new Gson().fromJson(req.body(), RequestBody.class);
+            final var requestBody = new Gson().fromJson(req.body(), RequestBody.class);
             gameName = requestBody.gameName();
             if (gameName == null) {
                 throw new Exception();
             }
+        } catch(Exception e) {
+            res.status(400);
+            return new Gson().toJson(Map.of("message", "Error: bad request"));
+        }
 
-            final String authToken = req.headers("Authorization");
+        try {
+            final var authToken = req.headers("Authorization");
             if (authToken == null) {
                 res.status(401);
-                responseData.put("message", "Error: Unauthorized");
-                return new Gson().toJson(responseData);
+                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
             }
 
-            final UserData user = gameService.getUserByAuth(authToken);
+            final var user = gameService.getUserByAuth(authToken);
             if (user == null) {
                 res.status(401);
-                responseData.put("message", "Error: Unauthorized");
-                return new Gson().toJson(responseData);
+                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
             }
 
             final int gameId = gameService.getNextGameID();
-            final GameData gameData = gameService.createGame(new GameData(
+            final var gameData = gameService.createGame(new GameData(
                     gameId,
                     null,
                     null,
                     gameName,
                     new ChessGame()));
 
-            gameService.createGame(gameData);
-
             res.status(200);
-            responseData.put("gameID", gameId);
-            return new Gson().toJson(responseData);
-        } catch (Exception e) {
+            return new Gson().toJson(Map.of(
+                    "gameID", gameData.getGameID()
+            ));
+        } catch(Exception e) {
             res.status(500);
-            responseData.put("message", "Error: Internal server error");
-            return new Gson().toJson(responseData);
+            return "Error: Internal server error";
         }
     }
 }

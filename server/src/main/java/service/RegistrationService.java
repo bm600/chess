@@ -3,6 +3,7 @@ package service;
 import dataAccess.*;
 import model.AuthData;
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import util.AuthTokenGenerator;
 
 public class RegistrationService {
@@ -29,5 +30,9 @@ public class RegistrationService {
         }
         String authToken = AuthTokenGenerator.makeToken();
         return authDAO.createAuth(username, authToken);
+    }
+    public String encryptPassword(String password) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(password);
     }
 }

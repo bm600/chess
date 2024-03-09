@@ -2,6 +2,7 @@ package server.handlers;
 
 import model.AuthData;
 import model.UserData;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import service.LoginService;
 import spark.Request;
 import spark.Response;
@@ -17,43 +18,42 @@ public class LoginHandler {
         this.loginService = loginService;
     }
 
-    public Object handleLogin(Request request, Response response) {
-        Map<String, Object> responseData = new HashMap<>();
+    public Object handleLogin(Request req, Response res) {
+        String username;
+        String password;
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
         try {
-            String username = null;
-            String password = null;
-
-            RequestData requestData = parseRequestData(request);
-            if (requestData != null) {
-                username = requestData.username();
-                password = requestData.password();
-            }
+            final var requestBody = new Gson().fromJson(req.body(), RequestData.class);
+            username = requestBody.username();
+            password = requestBody.password();
 
             if (username == null || password == null) {
-                response.status(400);
-                responseData.put("message", "Error: Bad request");
-                return new Gson().toJson(responseData);
+                throw new Exception();
+            }
+        } catch(Exception e) {
+            res.status(400);
+            return new Gson().toJson(Map.of("message", "Error: bad request"));
+        }
+
+        try {
+            final var user = loginService.getUser(username);
+
+            if (user == null || !encoder.matches(password, user.getPassword())) {
+                res.status(401);
+                return new Gson().toJson(Map.of("message", "Error: unauthorized"));
             }
 
-            UserData user = loginService.getUser(username);
+            final var newAuth = loginService.createAuth(username);
 
-            if (user == null || !user.getPassword().equals(password)) {
-                response.status(401);
-                responseData.put("message", "Error: Unauthorized");
-                return new Gson().toJson(responseData);
-            }
-
-            AuthData newAuth = loginService.createAuth(username);
-
-            response.status(200);
-            responseData.put("username", username);
-            responseData.put("authToken", newAuth.getAuthToken());
-            return new Gson().toJson(responseData);
-        } catch (Exception e) {
-            response.status(500);
-            responseData.put("message", "Error: Internal server error");
-            return new Gson().toJson(responseData);
+            res.status(200);
+            return new Gson().toJson(Map.of(
+                    "username", username,
+                    "authToken", newAuth.getAuthToken()
+            ));
+        } catch(Exception e) {
+            res.status(500);
+            return new Gson().toJson(Map.of("message", "Error: Internal server error"));
         }
     }
 
