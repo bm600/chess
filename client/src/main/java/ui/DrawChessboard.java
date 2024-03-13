@@ -7,7 +7,7 @@ import java.util.Random;
 import static ui.EscapeSequences.*;
 
 public class DrawChessboard {
-    private static final int BOARD_SIZE_IN_SQUARES = 3;
+    private static final int BOARD_SIZE_IN_SQUARES = 8;
     private static final int SQUARE_SIZE_IN_CHARS = 3;
     private static final int LINE_WIDTH_IN_CHARS = 1;
     private static final String EMPTY = "   ";
@@ -34,7 +34,7 @@ public class DrawChessboard {
 
         setBlack(out);
 
-        String[] headers = {"TIC", "TAC", "TOE"};
+        String[] headers = {"a", "b", "c", "d", "e", "f", "g", "h"};
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             drawHeader(out, headers[boardCol]);
 
