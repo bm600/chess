@@ -2,19 +2,12 @@ package ui;
 
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Random;
 
 import static ui.EscapeSequences.*;
 
 public class DrawChessboard {
     private static final int BOARD_SIZE_IN_SQUARES = 8;
-    private static final int SQUARE_SIZE_IN_CHARS = 3;
-    private static final int LINE_WIDTH_IN_CHARS = 1;
     private static final String EMPTY = "   ";
-    private static final String X = " X ";
-    private static final String O = " O ";
-
-    private static final Random rand = new Random();
 
     private static final String[][] chessPieces = new String[8][8];
 
@@ -68,17 +61,6 @@ public class DrawChessboard {
 
         out.print(player);
 
-    }
-
-    private static void drawRowOfSquares1(PrintStream out) {
-        for (int i = 0; i < 3; i++) {
-            for (int squareRow = 0; squareRow < BOARD_SIZE_IN_SQUARES / 2; ++squareRow) {
-                drawWhiteSquare(out, null);
-                drawBlackSquare(out, null);
-            }
-            setBlack(out);
-            out.println();
-        }
     }
 
     private static void populateArray() {
@@ -199,36 +181,9 @@ public class DrawChessboard {
         out.print(EMPTY.repeat(1));
     }
 
-    private static void drawSideNumber(PrintStream out, int num) {
-        out.print(SET_BG_COLOR_LIGHT_GREY);
-        out.print(SET_TEXT_COLOR_GREEN);
-
-        out.print(EMPTY.repeat(1));
-    }
-
-    private static void drawVerticalLine(PrintStream out) {
-
-        int boardSizeInSpaces = BOARD_SIZE_IN_SQUARES * SQUARE_SIZE_IN_CHARS +
-                (BOARD_SIZE_IN_SQUARES - 1) * LINE_WIDTH_IN_CHARS;
-
-        for (int lineRow = 0; lineRow < LINE_WIDTH_IN_CHARS; ++lineRow) {
-            setRed(out);
-            out.print(EMPTY.repeat(boardSizeInSpaces));
-
-            setBlack(out);
-            out.println();
-        }
-    }
-
-
     private static void setWhite(PrintStream out) {
         out.print(SET_BG_COLOR_WHITE);
         out.print(SET_TEXT_COLOR_WHITE);
-    }
-
-    private static void setRed(PrintStream out) {
-        out.print(SET_BG_COLOR_RED);
-        out.print(SET_TEXT_COLOR_RED);
     }
 
     private static void setBlack(PrintStream out) {
