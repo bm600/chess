@@ -41,9 +41,14 @@ public class DrawChessboard {
         setBlack(out);
 
         String[] headers = {" A ", " B ", " C ", " D ", " E ", " F ", " G ", " H "};
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(EMPTY.repeat(1));
         for (int boardCol = 0; boardCol < BOARD_SIZE_IN_SQUARES; ++boardCol) {
             drawHeader(out, headers[boardCol]);
         }
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(EMPTY.repeat(1));
+        setBlack(out);
 
         out.println();
     }
@@ -66,7 +71,7 @@ public class DrawChessboard {
     }
 
     private static void drawRowOfSquares1(PrintStream out) {
-        for(int i = 0; i < 3; i++) {
+        for (int i = 0; i < 3; i++) {
             for (int squareRow = 0; squareRow < BOARD_SIZE_IN_SQUARES / 2; ++squareRow) {
                 drawWhiteSquare(out, null);
                 drawBlackSquare(out, null);
@@ -76,7 +81,7 @@ public class DrawChessboard {
         }
     }
 
-    private static void populateArray(){
+    private static void populateArray() {
         // White pieces
         DrawChessboard.chessPieces[0][0] = "R"; // Rook
         DrawChessboard.chessPieces[0][1] = "N"; // Knight
@@ -105,32 +110,65 @@ public class DrawChessboard {
     }
 
     private static void drawBoard(PrintStream out) {
-        for(int j = 0; j < BOARD_SIZE_IN_SQUARES; j++) {
+        for (int j = 0; j < BOARD_SIZE_IN_SQUARES; j++) {
             for (int i = 0; i < 3; i++) {
                 if (j % 2 != 0) { //Number is even
+                    if(i == 1){
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
+                        out.print(SET_TEXT_COLOR_GREEN);
+                        out.print(STR." \{j} ");
+                    }
+                    else {
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
+                        out.print(EMPTY.repeat(1));
+                    }
                     for (int k = 0; k < BOARD_SIZE_IN_SQUARES / 2; ++k) {
-                        if(i == 1 & chessPieces[j][k*2] != null){
-                            printPlayer(out, chessPieces[j][k*2]);
-                        }if (i == 1 & chessPieces[j][(k*2)+1] != null) {
-                            printPlayer(out, chessPieces[j][(k * 2) + 1]);
+                        if (i == 1) {
+                            drawBlackSquare(out, chessPieces[j][k * 2]);
+                            drawWhiteSquare(out, chessPieces[j][(k * 2) + 1]);
+                        } else {
+                            drawBlackSquare(out, null);
+                            drawWhiteSquare(out, null);
                         }
-                        drawWhiteSquare(out, null);
-                        drawBlackSquare(out, null);
+                    }
+                    if(i == 1){
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
+                        out.print(SET_TEXT_COLOR_GREEN);
+                        out.print(STR." \{j} ");
+                    }
+                    else {
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
+                        out.print(EMPTY.repeat(1));
                     }
                     setBlack(out);
                     out.println();
-                }
-                else{ //Number is odd
+                } else { //Number is odd
+                    if(i == 1){
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
+                        out.print(SET_TEXT_COLOR_GREEN);
+                        out.print(STR." \{j} ");
+                    }
+                    else {
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
+                        out.print(EMPTY.repeat(1));
+                    }
                     for (int k = 0; k < BOARD_SIZE_IN_SQUARES / 2; ++k) {
-                        if(i == 1 & chessPieces[j][k*2] != null){
-                            printPlayer(out, chessPieces[j][k * 2]);
+                        if (i == 1) {
+                            drawWhiteSquare(out, chessPieces[j][k * 2]);
+                            drawBlackSquare(out, chessPieces[j][(k * 2) + 1]);
+                        } else {
+                            drawWhiteSquare(out, null);
+                            drawBlackSquare(out, null);
                         }
-                        if (i == 1 & chessPieces[j][(k * 2) + 1] != null) {
-                            printPlayer(out, chessPieces[j][(k * 2) + 1]);
-                        }
-                        drawBlackSquare(out, null);
-                        drawWhiteSquare(out, null);
-
+                    }
+                    if(i == 1){
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
+                        out.print(SET_TEXT_COLOR_GREEN);
+                        out.print(STR." \{j} ");
+                    }
+                    else {
+                        out.print(SET_BG_COLOR_LIGHT_GREY);
+                        out.print(EMPTY.repeat(1));
                     }
                     setBlack(out);
                     out.println();
@@ -139,40 +177,33 @@ public class DrawChessboard {
         }
     }
 
-    private static void drawWhiteSquare(PrintStream out, String... player) {
+    private static void drawWhiteSquare(PrintStream out, String player) {
         setWhite(out);
         out.print(EMPTY.repeat(1));
         if (player == null) {
             out.print(EMPTY.repeat(1));
         } else {
-            printPlayer(out, player[0]);
+            printPlayerWhite(out, player);
         }
         out.print(EMPTY.repeat(1));
     }
 
-    private static void drawBlackSquare(PrintStream out, String... player){
+    private static void drawBlackSquare(PrintStream out, String player) {
         setBlack(out);
         out.print(EMPTY.repeat(1));
-        if(player == null){
+        if (player == null) {
             out.print(EMPTY.repeat(1));
-        }
-        else{
-            printPlayer(out, player[0]);
+        } else {
+            printPlayerBlack(out, player);
         }
         out.print(EMPTY.repeat(1));
     }
 
-    private static void drawSideNumber(PrintStream out, int num){
-        for(int i = 0; i < 3; i++){
-            out.print(SET_BG_COLOR_LIGHT_GREY);
-            out.print(SET_TEXT_COLOR_GREEN);
+    private static void drawSideNumber(PrintStream out, int num) {
+        out.print(SET_BG_COLOR_LIGHT_GREY);
+        out.print(SET_TEXT_COLOR_GREEN);
 
-            out.print(EMPTY.repeat(1));
-            if(i == 1) {
-                var value = STR." \{num} ";
-                out.print(value);
-            }
-        }
+        out.print(EMPTY.repeat(1));
     }
 
     private static void drawVerticalLine(PrintStream out) {
@@ -205,13 +236,34 @@ public class DrawChessboard {
         out.print(SET_TEXT_COLOR_BLACK);
     }
 
-    private static void printPlayer(PrintStream out, String player) {
-        out.print(SET_BG_COLOR_WHITE);
-        out.print(SET_TEXT_COLOR_BLACK);
+    private static void printPlayerWhite(PrintStream out, String player) {
+        if(Character.isUpperCase(player.charAt(0))) {
+            out.print(SET_BG_COLOR_WHITE);
+            out.print(SET_TEXT_COLOR_RED);
+        }
+        else if(Character.isLowerCase(player.charAt(0))) {
+            out.print(SET_BG_COLOR_WHITE);
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
 
-        out.print(player);
+        out.print(STR." \{player} ");
 
         setWhite(out);
+    }
+
+    private static void printPlayerBlack(PrintStream out, String player) {
+        if(Character.isUpperCase(player.charAt(0))){
+            out.print(SET_BG_COLOR_BLACK);
+            out.print(SET_TEXT_COLOR_RED);
+        }
+        else if(Character.isLowerCase(player.charAt(0))){
+            out.print(SET_BG_COLOR_BLACK);
+            out.print(SET_TEXT_COLOR_BLUE);
+        }
+
+        out.print(STR." \{player} ");
+
+        setBlack(out);
     }
 }
 
