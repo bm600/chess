@@ -72,7 +72,7 @@ public class ServerFacade {
 
             makeRequest("PUT", "game", request, null, authToken);
         } catch (ClientException e) {
-            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, STR."Failed to join game: \{e.getMessage()}");
+            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, "Failed to join game: " + e.getMessage());
         }
     }
 
@@ -99,7 +99,7 @@ public class ServerFacade {
                 return readData(connection, responseClass);
             }
         } catch (IOException e) {
-            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, STR."Failed to make request: \{e.getMessage()}");
+            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, "Failed to make request: " + e.getMessage());
         }
     }
     private HttpURLConnection setupConn(String path, String method, AuthData authToken) throws IOException, ClientException {
