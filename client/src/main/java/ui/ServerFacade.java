@@ -119,7 +119,7 @@ public class ServerFacade {
         try {
             return new URI("http", null, serverUrl, serverPort, "/" + path, null, null).toURL();
         } catch (URISyntaxException | MalformedURLException e) {
-            throw new ClientException(400, STR."Failed to build URL: \{e.getMessage()}");
+            throw new ClientException(400, "Failed to build URL: " + e.getMessage());
         }
     }
 

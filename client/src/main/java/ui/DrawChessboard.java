@@ -83,7 +83,7 @@ public class DrawChessboard {
                     if (i == 1) {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(SET_TEXT_COLOR_GREEN);
-                        out.print(STR." \{j+1} ");
+                        out.print(" " + (j+1) + " ");
                     } else {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(EMPTY.repeat(1));
@@ -94,7 +94,7 @@ public class DrawChessboard {
                     if (i == 1) {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(SET_TEXT_COLOR_GREEN);
-                        out.print(STR." \{j+1} ");
+                        out.print(" " + (j+1) + " ");
                     } else {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(EMPTY.repeat(1));
@@ -111,7 +111,7 @@ public class DrawChessboard {
                     if (i == 1) {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(SET_TEXT_COLOR_GREEN);
-                        out.print(STR." \{j+1} ");
+                        out.print(" " + (j+1) + " ");
                     } else {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(EMPTY.repeat(1));
@@ -193,7 +193,7 @@ public class DrawChessboard {
                     if(i == 1){
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(SET_TEXT_COLOR_GREEN);
-                        out.print(STR." \{j+1} ");
+                        out.print(" " + (j+1) + " ");
                     }
                     else {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
@@ -211,7 +211,7 @@ public class DrawChessboard {
                     if(i == 1){
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(SET_TEXT_COLOR_GREEN);
-                        out.print(STR." \{j+1} ");
+                        out.print(" " + (j+1) + " ");
                     }
                     else {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
@@ -223,7 +223,7 @@ public class DrawChessboard {
                     if(i == 1){
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(SET_TEXT_COLOR_GREEN);
-                        out.print(STR." \{j+1} ");
+                        out.print(" " + (j+1) + " ");
                     }
                     else {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
@@ -241,7 +241,7 @@ public class DrawChessboard {
                     if(i == 1){
                         out.print(SET_BG_COLOR_LIGHT_GREY);
                         out.print(SET_TEXT_COLOR_GREEN);
-                        out.print(STR." \{j+1} ");
+                        out.print(" " + (j+1) + " ");
                     }
                     else {
                         out.print(SET_BG_COLOR_LIGHT_GREY);
@@ -296,7 +296,7 @@ public class DrawChessboard {
             out.print(SET_TEXT_COLOR_BLUE);
         }
 
-        out.print(STR." \{player} ");
+        out.print(" " + player + " ");
 
         setWhite(out);
     }
@@ -311,7 +311,7 @@ public class DrawChessboard {
             out.print(SET_TEXT_COLOR_BLUE);
         }
 
-        out.print(STR." \{player} ");
+        out.print(" " + player + " ");
 
         setBlack(out);
     }

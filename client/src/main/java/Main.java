@@ -197,7 +197,7 @@ public class Main {
         } catch (NumberFormatException e) {
             System.out.println("Invalid game ID.");
         } catch (ClientException e) {
-            System.out.println(STR."Failed to join game: \{e.getMessage()}");
+            System.out.println("Failed to join game: " + e.getMessage());
         }
     }
 
@@ -224,7 +224,7 @@ public class Main {
         } catch (NumberFormatException e) {
             System.out.println("Invalid game ID.");
         } catch (ClientException e) {
-            System.out.println(STR."Failed to observe game: \{e.getMessage()}");
+            System.out.println("Failed to observe game: " + e.getMessage());
         }
     }
 
