@@ -28,7 +28,7 @@ public class Main {
             try {
                 executeAction(action, actionParams);
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                System.out.println(STR."Error: \{e.getMessage()}");
             }
         }
 
@@ -36,7 +36,7 @@ public class Main {
     }
 
     private static void displayLoginStatus() {
-        System.out.print((userAuth == null ? "Logged-Out" : "Logged-In") + " >>> ");
+        System.out.print(STR."\{userAuth == null ? "Logged-Out" : "Logged-In"} >>> ");
     }
 
     private static void executeAction(String action, String[] params) throws Exception {
@@ -88,7 +88,7 @@ public class Main {
             userAuth = server.register(newUser);
             System.out.println("Registration successful. You are now logged in.");
         } catch (ClientException e) {
-            System.out.println("Registration failed: " + e.getMessage());
+            System.out.println(STR."Registration failed: \{e.getMessage()}");
         }
     }
 
@@ -106,7 +106,7 @@ public class Main {
             userAuth = server.login(user);
             System.out.println("Login successful.");
         } catch (ClientException e) {
-            System.out.println("Login failed: " + e.getMessage());
+            System.out.println(STR."Login failed: \{e.getMessage()}");
         }
     }
 
@@ -121,7 +121,7 @@ public class Main {
             userAuth = null;
             System.out.println("Logout successful.");
         } catch (ClientException e) {
-            System.out.println("Logout failed: " + e.getMessage());
+            System.out.println(STR."Logout failed: \{e.getMessage()}");
         }
     }
 
@@ -138,22 +138,22 @@ public class Main {
             } else {
                 System.out.println("Available games:");
                 for (int i = 0; i < gamesList.size(); i++) {
-                    String gameName = (i + 1) + ": " + gamesList.get(i).getGameName();
+                    String gameName = STR."\{i + 1}: \{gamesList.get(i).getGameName()}";
                     String whitePlayer = gamesList.get(i).getWhiteUsername();
                     String blackPlayer = gamesList.get(i).getBlackUsername();
 
-                    String whiteStatus = (whitePlayer == null || whitePlayer.isEmpty()) ? "WHITE: no players" : "WHITE: " + whitePlayer;
-                    String blackStatus = (blackPlayer == null || blackPlayer.isEmpty()) ? "BLACK: no players" : "BLACK: " + blackPlayer;
+                    String whiteStatus = (whitePlayer == null || whitePlayer.isEmpty()) ? "WHITE: no players" : STR."WHITE: \{whitePlayer}";
+                    String blackStatus = (blackPlayer == null || blackPlayer.isEmpty()) ? "BLACK: no players" : STR."BLACK: \{blackPlayer}";
 
                     if (whiteStatus.equals("WHITE: no players") && blackStatus.equals("BLACK: no players")) {
-                        System.out.println(gameName + ": no players");
+                        System.out.println(STR."\{gameName}: no players");
                     } else {
-                        System.out.println(gameName + ": " + whiteStatus + " " + blackStatus);
+                        System.out.println(STR."\{gameName}: \{whiteStatus} \{blackStatus}");
                     }
                 }
             }
         } catch (ClientException e) {
-            System.out.println("Failed to list games: " + e.getMessage());
+            System.out.println(STR."Failed to list games: \{e.getMessage()}");
         }
     }
 
@@ -173,7 +173,7 @@ public class Main {
             server.createGame(userAuth, gameName);
             System.out.println("Game created successfully.");
         } catch (ClientException e) {
-            System.out.println("Failed to create game: " + e.getMessage());
+            System.out.println(STR."Failed to create game: \{e.getMessage()}");
         }
     }
 
@@ -197,7 +197,7 @@ public class Main {
         } catch (NumberFormatException e) {
             System.out.println("Invalid game ID.");
         } catch (ClientException e) {
-            System.out.println("Failed to join game: " + e.getMessage());
+            System.out.println(STR."Failed to join game: \{e.getMessage()}");
         }
     }
 
@@ -224,7 +224,7 @@ public class Main {
         } catch (NumberFormatException e) {
             System.out.println("Invalid game ID.");
         } catch (ClientException e) {
-            System.out.println("Failed to observe game: " + e.getMessage());
+            System.out.println(STR."Failed to observe game: \{e.getMessage()}");
         }
     }
 

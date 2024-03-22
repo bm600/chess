@@ -49,7 +49,7 @@ public class ServerFacade {
             }
             return games.games().stream().map(GameHelper::toGame).collect(Collectors.toList());
         } catch (ClientException e) {
-            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, "Failed to list games: " + e.getMessage());
+            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, STR."Failed to list games: \{e.getMessage()}");
         }
     }
 
@@ -72,7 +72,7 @@ public class ServerFacade {
 
             makeRequest("PUT", "game", request, null, authToken);
         } catch (ClientException e) {
-            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, "Failed to join game: " + e.getMessage());
+            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, STR."Failed to join game: \{e.getMessage()}");
         }
     }
 
@@ -99,7 +99,7 @@ public class ServerFacade {
                 return readData(connection, responseClass);
             }
         } catch (IOException e) {
-            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, "Failed to make request: " + e.getMessage());
+            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, STR."Failed to make request: \{e.getMessage()}");
         }
     }
     private HttpURLConnection setupConn(String path, String method, AuthData authToken) throws IOException, ClientException {
@@ -119,7 +119,7 @@ public class ServerFacade {
         try {
             return new URI("http", null, serverUrl, serverPort, "/" + path, null, null).toURL();
         } catch (URISyntaxException | MalformedURLException e) {
-            throw new ClientException(400, "Failed to build URL: " + e.getMessage());
+            throw new ClientException(400, STR."Failed to build URL: \{e.getMessage()}");
         }
     }
 
