@@ -49,7 +49,7 @@ public class ServerFacade {
             }
             return games.games().stream().map(GameHelper::toGame).collect(Collectors.toList());
         } catch (ClientException e) {
-            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, STR."Failed to list games: \{e.getMessage()}");
+            throw new ClientException(HttpURLConnection.HTTP_BAD_REQUEST, "Failed to list games: " + e.getMessage());
         }
     }
 
