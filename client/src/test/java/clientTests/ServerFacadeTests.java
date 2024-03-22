@@ -22,7 +22,7 @@ public class ServerFacadeTests {
         testServer = new Server();
         int port = testServer.run(0);
         serverFacade = new ServerFacade("localhost", port);
-        System.out.println(STR."Test server running on port: \{port}");
+        System.out.println("Test server running on port: " + port);
     }
 
     @AfterAll
@@ -35,7 +35,7 @@ public class ServerFacadeTests {
         try {
             serverFacade.clear();
         } catch (ClientException e) {
-            System.out.println(STR."Database reset failed: \{e.getMessage()}");
+            System.out.println("Database reset failed: " + e.getMessage());
         }
     }
 
