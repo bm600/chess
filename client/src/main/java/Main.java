@@ -232,7 +232,7 @@ public class Main {
             if (userAuth == null) {
                 System.out.println("Available commands:\nregister <username> <password> <email>\nlogin <username> <password>\nhelp\nquit");
             } else {
-                System.out.println("Available commands:\nlogout\nlist\ncreate <name>\njoin\nquit");
+                System.out.println("Available commands:\nlogout\nlist\ncreate <name>\njoin\nobserve\nquit");
             }
         }
     }
