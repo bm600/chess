@@ -142,8 +142,8 @@ public class Main {
                     String whitePlayer = gamesList.get(i).getWhiteUsername();
                     String blackPlayer = gamesList.get(i).getBlackUsername();
 
-                    String whiteStatus = (whitePlayer == null || whitePlayer.isEmpty()) ? "WHITE: no players" : STR."WHITE: \{whitePlayer}";
-                    String blackStatus = (blackPlayer == null || blackPlayer.isEmpty()) ? "BLACK: no players" : STR."BLACK: \{blackPlayer}";
+                    String whiteStatus = (whitePlayer == null || whitePlayer.isEmpty()) ? "WHITE: no players" : "WHITE: " + whitePlayer;
+                    String blackStatus = (blackPlayer == null || blackPlayer.isEmpty()) ? "BLACK: no players" : "BLACK: " + blackPlayer;
 
                     if (whiteStatus.equals("WHITE: no players") && blackStatus.equals("BLACK: no players")) {
                         System.out.println(gameName + ": no players");
